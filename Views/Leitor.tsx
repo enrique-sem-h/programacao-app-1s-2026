@@ -9,12 +9,40 @@ export default function Leitor() {
     <View style={styles.content}>
       <View style={styles.avatarPlaceholder}><Text style={styles.avatarText}>E</Text></View>
       <Text style={styles.userName}>Enrique</Text>
+      
+      <TouchableOpacity style={styles.menuItem} onPress={() => setTelaAtual('comentar')}>
+        <Text style={styles.menuItemText}>Ir para Comentarios</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const TelaComentar = () => (
+    <View style={styles.content}>
+      <TouchableOpacity style={styles.backBtn} onPress={() => setTelaAtual('perfil')}>
+        <Text>← Voltar ao Perfil</Text>
+      </TouchableOpacity>
+      <Text style={styles.header}>Comentar Noticia</Text>
+      <TextInput 
+        style={[styles.input, { height: 120 }]} 
+        placeholder="Escreva seu comentario aqui..." 
+        multiline
+        value={comentario}
+        onChangeText={setComentario}
+      />
+      <TouchableOpacity style={styles.saveButton} onPress={() => {
+        Alert.alert("Sucesso", "Comentario enviado!");
+        setComentario('');
+        setTelaAtual('perfil');
+      }}>
+        <Text style={styles.buttonText}>Postar Comentario</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
       {telaAtual === 'perfil' && <TelaPerfil />}
+      {telaAtual === 'comentar' && <TelaComentar />}
     </View>
   );
 }
