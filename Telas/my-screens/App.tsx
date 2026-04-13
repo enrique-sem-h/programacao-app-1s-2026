@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// Importando as telas que vamos criar abaixo
 import Login from './src/screens/Login';
 import Autor from './src/screens/Autor';
 import Leitor from './src/screens/Leitor';
