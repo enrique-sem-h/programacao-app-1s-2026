@@ -10,11 +10,10 @@ import {
 } from "react-native";
 
 export default function Autor() {
-  const [telaAtual, setTelaAtual] = useState<"perfil" | "lista" | "formulario" | "comentar">(
+  const [telaAtual, setTelaAtual] = useState<"perfil" | "lista" | "formulario">(
     "perfil",
   );
   const [modoEdicao, setModoEdicao] = useState(false);
-  const [comentario, setComentario] = useState('');
 
   const TelaPerfil = () => (
     <View style={styles.content}>
@@ -27,12 +26,6 @@ export default function Autor() {
         onPress={() => setTelaAtual("lista")}
       >
         <Text style={styles.menuItemText}>Ver Minhas Noticias</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.menuItem, { marginTop: 10 }]} 
-        onPress={() => setTelaAtual('comentar')}
-      >
-        <Text style={styles.menuItemText}>Comentar Noticia</Text>
       </TouchableOpacity>
     </View>
   );
@@ -104,41 +97,11 @@ export default function Autor() {
     </View>
   );
 
-  const TelaComentar = () => (
-    <View style={styles.content}>
-      <TouchableOpacity style={styles.backBtn} onPress={() => setTelaAtual('perfil')}>
-        <Text>← Voltar ao Perfil</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.header}>Comentar Noticia</Text>
-
-      <TextInput 
-        style={[styles.input, { height: 120, textAlignVertical: 'top' }]} 
-        placeholder="Escreva seu comentario aqui..." 
-        multiline
-        value={comentario}
-        onChangeText={setComentario}
-      />
-
-      <TouchableOpacity 
-        style={[styles.saveButton, { backgroundColor: '#4a90e2' }]} 
-        onPress={() => {
-          Alert.alert("Sucesso", "Comentario enviado!");
-          setComentario('');
-          setTelaAtual('perfil');
-        }}
-      >
-        <Text style={styles.buttonText}>Postar Comentario</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       {telaAtual === "perfil" && <TelaPerfil />}
       {telaAtual === "lista" && <TelaLista />}
       {telaAtual === "formulario" && <TelaFormulario />}
-      {telaAtual === 'comentar' && <TelaComentar />}
     </View>
   );
 }
@@ -198,7 +161,7 @@ const styles = StyleSheet.create({
   editLink: { color: "#4a90e2", fontWeight: "bold" },
   input: {
     backgroundColor: "#fff",
-    borderWeight: 1,
+    // borderWeight: 1,
     borderColor: "#ddd",
     padding: 12,
     borderRadius: 8,

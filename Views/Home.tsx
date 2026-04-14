@@ -7,12 +7,12 @@ import {
   Button,
   Platform,
   Alert,
+  Pressable,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
-function navigate(to: string) {
-  console.log(to);
-}
+import Feather from "@expo/vector-icons/Feather";
+import { useState } from "react";
+import NewsComponent from "../Components/newsComponent";
 
 function alert(message: string) {
   if (Platform.OS === "web") {
@@ -22,7 +22,12 @@ function alert(message: string) {
   }
 }
 
+const News = NewsComponent;
+
 export default function Home({ navigation }: any) {
+  const [remind, setRemind] = useState<boolean>(false);
+  const remindToggle = () => setRemind((prev) => !prev);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -30,18 +35,32 @@ export default function Home({ navigation }: any) {
         <View style={styles.horizontal_view}>
           <Button
             title="Cadastro"
-            onPress={() => navigate("to be implemented")}
+            onPress={() => navigation.navigate("Register")}
           />
           <Button title="Login" onPress={() => navigation.navigate("Login")} />
-          <Button
-            title="Lembrar"
-            onPress={() => alert("Você será lembrado!")}
-          />
+          <Pressable
+            style={({ pressed }) => [
+              {
+                opacity: pressed ? 0.5 : 1,
+              },
+            ]}
+            onPress={() => {
+              remindToggle();
+              alert(remind ? "lembrete desativado" : "Você será lembrado!");
+            }}
+          >
+            <Feather
+              name={remind ? "bell" : "bell-off"}
+              size={28}
+              color="blue"
+            />
+          </Pressable>
         </View>
         <TextInput
           style={styles.textInput_base}
           placeholder="Buscar noticias (por tag ou UF)"
         />
+        <News></News>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -62,6 +81,10 @@ const styles = StyleSheet.create({
   text_title: {
     fontWeight: "900",
     fontSize: 32,
+  },
+
+  icon_button: {
+    color: "blue",
   },
 
   textInput_base: {
