@@ -8,6 +8,7 @@ import Leitor from "./Leitor";
 import Editor from "./Editor";
 import Home from "./Home";
 import Register from "./Register";
+import DashboardAdmin from "./DashboardAdmin";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Editor" component={Editor} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="DashboardAdmin" component={DashboardAdmin} options={{ title: 'SuperAdmin' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

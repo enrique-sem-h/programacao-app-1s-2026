@@ -27,6 +27,13 @@ export default function Login({ navigation }: any) {
       >
         <Text style={styles.buttonText}>Entrar como EDITOR</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#6c5ce7", marginTop: 20 }]}
+        onPress={() => navigation.navigate("DashboardAdmin")}
+      >
+        <Text style={styles.buttonText}>Entrar como SUPERADMIN</Text>
+      </TouchableOpacity>
     </View>
   );
 }
