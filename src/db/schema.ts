@@ -1,7 +1,7 @@
 import { foreignKey, uuid } from "drizzle-orm/gel-core";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-const uf = sqliteTable("uf", {
+export const uf = sqliteTable("uf", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -9,7 +9,7 @@ const uf = sqliteTable("uf", {
   sigla: text("sigla").unique().notNull(),
 });
 
-const cidade = sqliteTable("cidade", {
+export const cidade = sqliteTable("cidade", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -19,7 +19,7 @@ const cidade = sqliteTable("cidade", {
   }),
 });
 
-const regiao = sqliteTable("regiao", {
+export const regiao = sqliteTable("regiao", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -28,9 +28,3 @@ const regiao = sqliteTable("regiao", {
     onDelete: "cascade",
   }),
 });
-
-export default {
-  uf,
-  cidade,
-  regiao,
-};

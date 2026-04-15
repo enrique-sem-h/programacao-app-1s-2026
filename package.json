@@ -20,11 +20,12 @@
   },
   "homepage": "https://github.com/enrique-sem-h/programacao-app-1s-2026#readme",
   "dependencies": {
-    "@libsql/client": "^0.17.2",
+    "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
     "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.6.0",
     "@types/prompt-sync": "^4.2.3",
     "drizzle-kit": "^0.31.10",
