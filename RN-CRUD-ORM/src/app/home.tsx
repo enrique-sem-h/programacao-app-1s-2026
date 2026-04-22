@@ -1,122 +1,64 @@
 import * as Crypto from "expo-crypto";
-import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-  FlatList,
-  Pressable,
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TextInput, Pressable, FlatList, Alert } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import * as Schema from "../db/schemas/ufSchema";
-
-type Data = {
-  id: string;
-  name: string;
-  abbreviation: string;
-};
+import { eq, like } from "drizzle-orm";
 
 export default function Home() {
-  const [uf, setUf] = useState("");
-  const [abbreviation, setAbbreviation] = useState("");
+  const [name, setName] = useState("");
+  const [abbr, setAbbr] = useState("");
   const [search, setSearch] = useState("");
-  const [data, setData] = useState<Data[]>([]);
+  const [data, setData] = useState<any[]>([]);
 
   const database = useSQLiteContext();
   const db = drizzle(database, { schema: Schema });
 
-  async function add() {
+  const fetchUFs = async () => {
     try {
-      if (!uf || !abbreviation) {
-        alert("Por favor, preencha ambos os campos.");
-        return;
-      }
-      const response = await db
-        .insert(Schema.uf)
-        .values({ id: Crypto.randomUUID(), name: uf, abbreviation });
-      setUf("");
-      setAbbreviation("");
-      await fetchUFs();
-    } catch (error) {
-      console.error("Error adding UF:", error);
-    }
-  }
-
-  async function fetchUFs() {
-    try {
-      const result = await db.select().from(Schema.uf).all();
+      const result = await db.select().from(Schema.uf).where(like(Schema.uf.name, `%${search}%`));
       setData(result);
-    } catch (error) {
-      console.error("Error fetching UFs:", error);
-    }
-  }
+    } catch (e) { console.log(e); }
+  };
 
-  fetchUFs();
+  useEffect(() => { fetchUFs(); }, [search]);
+
+  const add = async () => {
+    if (!name || !abbr) return Alert.alert("Ops", "Preencha os campos.");
+    await db.insert(Schema.uf).values({ id: Crypto.randomUUID(), name, abbreviation: abbr.toUpperCase() });
+    setName(""); setAbbr(""); fetchUFs();
+  };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.main}>
-        <TextInput
-          placeholder="Adicionar UF"
-          style={styles.input}
-          value={uf}
-          onChangeText={setUf}
-        />
-        <TextInput
-          placeholder="Adicionar abreviação"
-          style={styles.input}
-          value={abbreviation}
-          onChangeText={setAbbreviation}
-        />
+    <View style={styles.container}>
+      <Text style={styles.label}>Cadastrar Nova UF</Text>
+      <TextInput placeholder="Nome (Ex: São Paulo)" style={styles.input} value={name} onChangeText={setName} />
+      <TextInput placeholder="Sigla (Ex: SP)" style={styles.input} value={abbr} onChangeText={setAbbr} maxLength={2} />
+      <Pressable style={styles.btn} onPress={add}><Text style={{color:'#fff', fontWeight:'bold'}}>SALVAR</Text></Pressable>
 
-        {/* <Button title="Add" onPress={add}></Button>
-              <Button title="reset" onPress={() => {
-                db.delete(Schema.uf).run();
-                setData([]);
-        }}></Button> */}
+      <TextInput placeholder="🔍 Pesquisar..." style={styles.search} value={search} onChangeText={setSearch} />
 
-        <TextInput
-          placeholder="Pesquisar UF"
-          style={styles.input}
-          value={search}
-          onChangeText={setSearch}
-        />
-
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Pressable style={styles.item} onPress={() => console.log(item.id)}>
-              <Text>{item.name}</Text>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text>{item.name} ({item.abbreviation})</Text>
+            <Pressable onPress={() => db.delete(Schema.uf).where(eq(Schema.uf.id, item.id)).then(fetchUFs)}>
+              <Text style={{color: 'red'}}>Excluir</Text>
             </Pressable>
-          )}
-          ListEmptyComponent={() => <Text>Nenhuma UF encontrada</Text>}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-    padding: 20,
-    gap: 16,
-  },
-  input: {
-    height: 54,
-    borderWidth: 1,
-    borderRadius: 16,
-    borderColor: "#999",
-    paddingHorizontal: 16,
-  },
-  item: {
-    padding: 16,
-    borderWidth: 1,
-    borderRadius: 16,
-  },
+  container: { flex: 1, padding: 20 },
+  label: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 10, borderRadius: 8, backgroundColor: '#fff' },
+  btn: { backgroundColor: '#6200EE', padding: 15, borderRadius: 8, alignItems: 'center' },
+  search: { borderWidth: 1, borderColor: '#6200EE', padding: 10, marginVertical: 15, borderRadius: 8, backgroundColor: '#fff' },
+  item: { padding: 15, backgroundColor: '#fff', marginBottom: 10, borderRadius: 8, flexDirection: 'row', justifyContent: 'space-between', elevation: 1 }
 });
