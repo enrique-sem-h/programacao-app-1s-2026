@@ -1,35 +1,51 @@
-import { StyleSheet } from "react-native";
-
-import EditScreenInfo from "@/components/EditScreenInfo";
+import React from "react";
+import { StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
 import { Text, View } from "@/components/Themed";
+import { useRouter } from "expo-router";
 
-export default function Chat() {
+const CHATS = [
+  { id: '1', name: 'Mariana (Furadeira Bosch)', lastMsg: 'Olá', time: '10:30', image: 'https://via.placeholder.com/50' },
+  { id: '2', name: 'Enrique (Câmera Canon)', lastMsg: 'Obrigada!', time: 'Ontem', image: 'https://via.placeholder.com/50' },
+];   // trocar dps pelos dados do banco
+
+export default function ListaChats() {
+  const router = useRouter();
+
+  const renderChat = ({ item }: any) => (
+    <TouchableOpacity 
+      style={styles.chatItem} 
+      onPress={() => router.push("/chatDetails")} 
+    >
+      <View style={styles.avatar} />
+      <View style={styles.chatInfo}>
+        <View style={styles.headerRow}>
+          <Text style={styles.userName}>{item.name}</Text>
+          <Text style={styles.time}>{item.time}</Text>
+        </View>
+        <Text style={styles.lastMsg} numberOfLines={1}>{item.lastMsg}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+      <FlatList
+        data={CHATS}
+        keyExtractor={item => item.id}
+        renderItem={renderChat}
       />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
+  container: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
+  pageTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  chatItem: { flexDirection: 'row', paddingVertical: 15, borderBottomWidth: 0.5, borderBottomColor: '#ccc', backgroundColor: 'transparent' },
+  avatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#ddd', marginRight: 15 },
+  chatInfo: { flex: 1, backgroundColor: 'transparent' },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, backgroundColor: 'transparent' },
+  userName: { fontSize: 16, fontWeight: '600' },
+  time: { fontSize: 12, color: '#888' },
+  lastMsg: { fontSize: 14, color: '#666' }
 });
