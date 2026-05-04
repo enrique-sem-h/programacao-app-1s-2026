@@ -82,7 +82,10 @@ export default function AdDetails() {
             <Text style={styles.buttonText}>Chat</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.rentButton}>
+          <TouchableOpacity 
+            style={styles.rentButton}
+            onPress={() => router.push("/bookingSummary")}
+          >
             <Text style={styles.buttonText}>Alugar</Text>
           </TouchableOpacity>
         </View>

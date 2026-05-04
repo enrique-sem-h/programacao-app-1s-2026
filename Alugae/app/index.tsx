@@ -12,17 +12,21 @@ export default function Index() {
       <Image
         style={styles.logo}
         source={require("../assets/images/icon.png")}
-      ></Image>
-      <TextInput style={styles.input} placeholder="username"></TextInput>
+      />
+      <TextInput style={styles.input} placeholder="username" />
       <TextInput
         style={styles.input}
         placeholder="password"
         secureTextEntry
-      ></TextInput>
+      />
       <MainButton
         title="Login"
         onPress={() => router.replace("/(tabs)/home")}
-      ></MainButton>
+      />
+
+      <Pressable onPress={() => router.push("/register")} style={{ marginTop: 20 }}>
+        <Text style={{ color: "#007AFF", fontWeight: "bold" }}>Não tem conta? Criar conta</Text>
+      </Pressable>
     </View>
   );
 }

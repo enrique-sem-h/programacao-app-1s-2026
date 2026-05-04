@@ -47,7 +47,7 @@ export default function Profile() {
         <View style={styles.separator} />
         
         <ProfileButton 
-          title="Minhas compras" 
+          title="Meus aluguéis" 
           icon="cart-outline" 
           onPress={() => router.push("/myRentals")} 
         />
