@@ -5,7 +5,7 @@ const app = express();
 
 const PORT = 3000;
 
-app.get("/", routers.authRouter);
+app.use("/", routers.authRouter);
 
 app.listen(PORT, () => {
   console.log(`server initiated at http://localhost:${PORT}`);
