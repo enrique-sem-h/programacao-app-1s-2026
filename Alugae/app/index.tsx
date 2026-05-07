@@ -1,31 +1,104 @@
-import { StyleSheet, Image, TextInput, Pressable } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Image, TextInput, Pressable, Alert } from "react-native";
 import { useRouter } from "expo-router";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import MainButton from "@/components/MainButton";
 
+type LoginResponse = {
+  token?: string;
+  error?: string;
+};
+
 export default function Index() {
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin() {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          senha,
+        }),
+      });
+
+      const data: LoginResponse = await response.json();
+
+      if (!response.ok) {
+        Alert.alert("Erro", data.error || "Falha no login");
+        return;
+      }
+
+      if (data.token) {
+        console.log("TOKEN:", data.token);
+
+        // later:
+        // await SecureStore.setItemAsync("token", data.token);
+
+        router.replace("/(tabs)/home");
+      } else {
+        Alert.alert("Erro", "Token não recebido");
+      }
+    } catch (error) {
+      console.error(error);
+
+      Alert.alert("Erro", "Não foi possível conectar ao servidor");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Image
         style={styles.logo}
         source={require("../assets/images/icon.png")}
       />
-      <TextInput style={styles.input} placeholder="username" />
+
       <TextInput
         style={styles.input}
-        placeholder="password"
-        secureTextEntry
-      />
-      <MainButton
-        title="Login"
-        onPress={() => router.replace("/(tabs)/home")}
+        placeholder="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
       />
 
-      <Pressable onPress={() => router.push("/register")} style={{ marginTop: 20 }}>
-        <Text style={{ color: "#007AFF", fontWeight: "bold" }}>Não tem conta? Criar conta</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="senha"
+        secureTextEntry
+        value={senha}
+        onChangeText={setSenha}
+      />
+
+      <MainButton
+        title={loading ? "Entrando..." : "Login"}
+        onPress={handleLogin}
+      />
+
+      <Pressable
+        onPress={() => router.push("/register")}
+        style={{ marginTop: 20 }}
+      >
+        <Text
+          style={{
+            color: "#007AFF",
+            fontWeight: "bold",
+          }}
+        >
+          Não tem conta? Criar conta
+        </Text>
       </Pressable>
     </View>
   );
