@@ -5,16 +5,12 @@ export const usuarios = mysqlTable("usuarios", {
   id: varchar("id", { length: 36 })
     .primaryKey()
     .$defaultFn(() => randomUUID()),
-  cpf: varchar("cpf", { length: 255 }).notNull().unique(),
   nome: varchar("nome", { length: 255 }).notNull(),
+  cpf: varchar("cpf", { length: 255 }).notNull().unique(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   senha: varchar("senha", { length: 255 }).notNull(),
-  cep: varchar("cep", { length: 255 }).notNull(),
-  logradouro: varchar("logradouro", { length: 255 }).notNull(),
-  bairro: varchar("bairro", { length: 255 }).notNull(),
-  numero: int("numero").notNull(),
-  uf: varchar("uf", { length: 2, enum: ["DF"] }).notNull(),
-  complemento: varchar("complemento", { length: 50 }).notNull(),
-  rep: float("rep", { precision: 4, scale: 2 }).notNull(),
+  endereco: varchar("endereco", { length: 255 }).notNull(),
+  telefone: varchar("telefone", { length: 11 }).notNull(),
+  rep: float("rep", { precision: 4, scale: 2 }).notNull().default(0),
   saldo: float("saldo").notNull().default(0),
 });

@@ -1,0 +1,1 @@
+ALTER TABLE `usuarios` MODIFY COLUMN `rep` float(4,2) NOT NULL DEFAULT 0;

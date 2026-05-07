@@ -15,6 +15,27 @@
       "when": 1778104984789,
       "tag": "0001_tan_valeria_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1778111471458,
+      "tag": "0002_hard_wilson_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1778111572441,
+      "tag": "0003_harsh_daredevil",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1778119251258,
+      "tag": "0004_rapid_azazel",
+      "breakpoints": true
     }
   ]
 }
