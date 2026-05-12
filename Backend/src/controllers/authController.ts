@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { db } from "../utils/database/index.ts";
+import { db } from "root/infra/database/index.ts";
 import { eq } from "drizzle-orm";
-import { usuarios } from "../utils/database/schemas/UserSchema.ts";
+import { usuarios } from "root/infra/database/schemas/UserSchema.ts";
 import jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt-ts";
 

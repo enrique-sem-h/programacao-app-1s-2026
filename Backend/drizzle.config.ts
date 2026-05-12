@@ -6,10 +6,10 @@ dotenv.config({
 });
 
 export default defineConfig({
-  out: "./utils/database/drizzle",
+  out: "./infra/database/drizzle",
   dialect: "mysql",
-  schema: "./utils/database/schemas/*",
+  schema: "./infra/database/schemas/*.ts",
   dbCredentials: {
-    url: `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
+    url: `mysql://${process.env.MYSQL_USER}:${process.env.MYSQL_PASSWORD}@${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}/${process.env.MYSQL_DATABASE}`,
   },
 });

@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "tsx watch index.ts",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "services:up": "docker compose -f infra/docker/compose.yaml up -d",
+    "services:down": "docker compose -f infra/docker/compose.yaml down",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,7 +28,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.6.0",
     "drizzle-kit": "^0.31.10",
-    "nodemon": "^3.1.14",
     "typescript": "^6.0.3"
   }
 }

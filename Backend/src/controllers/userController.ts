@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { db } from "../utils/database/index.ts";
-import { usuarios } from "../utils/database/schemas/UserSchema.ts";
+import { db } from "root/infra/database/index.ts";
+import { usuarios } from "root/infra/database/schemas/UserSchema.ts";
 import * as bcrypt from "bcrypt-ts";
 import uuid from "crypto";
 import { eq } from "drizzle-orm";

@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "60c88373-ffdd-4b50-9ba5-cb1ca8ee0b25",
-  "prevId": "d5251af3-4479-4725-b825-4828ebcaab04",
+  "id": "d9b34708-db81-4ebe-97b8-454815ce48f1",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "usuarios": {
       "name": "usuarios",
@@ -49,12 +49,20 @@
           "notNull": true,
           "autoincrement": false
         },
+        "telefone": {
+          "name": "telefone",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "rep": {
           "name": "rep",
           "type": "float(4,2)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": 0
         },
         "saldo": {
           "name": "saldo",
