@@ -12,31 +12,41 @@ export async function login(req: Request, res: Response) {
     if (!email || !senha) {
       return res.status(400).json({ error: "Email and password are required" });
     }
-    const user = await db
+    const users = await db
       .select({
         id: usuarios.id,
         email: usuarios.email,
+        nome: usuarios.nome,
         senha: usuarios.senha,
       })
       .from(usuarios)
       .where(eq(usuarios.email, email));
 
-    if (!user || user.length === 0) {
-      return res.status(401).json({ error: "Invalid email or password" });
+    const user = users[0];
+
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(senha, user[0]!.senha);
+    const isPasswordValid = await bcrypt.compare(senha, user.senha);
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
     const token = jwt.sign(
-      { id: user[0]!.id, email: user[0]!.email },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: "1d" },
     );
-    res.json({ token });
+    res.json({
+      token,
+      usuario: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });

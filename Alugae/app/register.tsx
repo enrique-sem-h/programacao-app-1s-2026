@@ -69,10 +69,9 @@ export default function Register() {
 
         return;
       }
-      console.log("chego");
 
       Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-      router.replace("/");
+      router.back(); 
     } catch (error) {
       console.error(error);
 
