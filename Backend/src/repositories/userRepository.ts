@@ -1,5 +1,5 @@
 import { db } from "@/../infra/database/index.ts";
-import { usuarios } from "@/../infra/database/schemas/UserSchema.ts";
+import { usuarios } from "root/infra/database/schemas/usuariosSchema.ts";
 import type {
   GetUserDTO,
   CreateUserDTO,
