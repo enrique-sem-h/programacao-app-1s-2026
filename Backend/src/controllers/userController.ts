@@ -1,9 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { db } from "root/infra/database/index.ts";
-import { usuarios } from "root/infra/database/schemas/usuariosSchema.ts";
 import * as bcrypt from "bcrypt-ts";
 import uuid from "crypto";
-import { eq } from "drizzle-orm";
 import * as userService from "../services/userService.ts";
 import type { CreateUserDTO, UpdateUserDTO } from "@/types/types.ts";
 
