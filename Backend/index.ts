@@ -13,6 +13,7 @@ app.get("/", async (req: any, res: any) => {
 
 app.use("/", routers.authRouter);
 app.use("/", routers.userRouter);
+app.use("/", routers.anuncioRouter);
 
 app.listen(PORT, () => {
   console.log(`server initiated at http://localhost:${PORT}`);
