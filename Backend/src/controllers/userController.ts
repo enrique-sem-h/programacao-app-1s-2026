@@ -5,7 +5,7 @@ import * as bcrypt from "bcrypt-ts";
 import uuid from "crypto";
 import { eq } from "drizzle-orm";
 import * as userService from "../services/userService.ts";
-import type { CreateUserDTO, UpdateUserDTO } from "@/types.ts";
+import type { CreateUserDTO, UpdateUserDTO } from "@/types/types.ts";
 
 export async function signup(req: Request, res: Response) {
   // if body contains user
@@ -60,6 +60,17 @@ export async function signup(req: Request, res: Response) {
 
 export async function getUser(req: Request, res: Response) {
   const id = req.params.id;
+  const authUser = req.user.id;
+
+  if (authUser && authUser === id) {
+    const user = await userService.getSensitiveUserData(authUser);
+    
+    if (user) {
+      return res.status(200).json(user);
+    }
+
+    return res.status(404).json({ error: "User not found" });
+  }
 
   if (id && typeof id === "string") {
     const user = await userService.getUser(id);
@@ -97,8 +108,12 @@ export async function updateUser(req: Request, res: Response) {
   const result = await userService.updateUser(userId, updatedData);
 
   if (result) {
-    return res.status(200).json({ message: "User updated successfully", result });
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", result });
   }
 
-  return res.status(500).json({ error: "internal error, couldn't update user" });
+  return res
+    .status(500)
+    .json({ error: "internal error, couldn't update user" });
 }

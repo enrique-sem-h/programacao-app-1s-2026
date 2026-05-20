@@ -1,6 +1,6 @@
 import { db } from "@/../infra/database/index.ts";
 import { usuarios } from "@/../infra/database/schemas/UserSchema.ts";
-import type { AuthUserDTO } from "@/types.ts";
+import type { AuthUserDTO } from "@/types/types.ts";
 import { eq } from "drizzle-orm";
 
 export async function getUser(

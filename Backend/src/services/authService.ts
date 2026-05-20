@@ -1,4 +1,4 @@
-import type { AuthUserDTO } from "@/types.ts";
+import type { AuthUserDTO } from "@/types/types.ts";
 import * as authRepository from "@/repositories/authRepository.ts";
 
 export async function getUser(

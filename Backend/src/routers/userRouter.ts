@@ -7,7 +7,7 @@ import * as middleware from "../../infra/jwt/middleware.ts"
 const router = express.Router();
 
 router.post("/signup", userController.signup);
-router.get("/user/:id", userController.getUser);
+router.get("/user/:id", middleware.verifyToken, userController.getUser);
 router.put("/user/:id", middleware.verifyToken, userController.updateUser);
 
 export default router;

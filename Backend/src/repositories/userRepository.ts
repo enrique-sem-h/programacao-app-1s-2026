@@ -1,12 +1,35 @@
 import { db } from "@/../infra/database/index.ts";
 import { usuarios } from "@/../infra/database/schemas/UserSchema.ts";
-import type { GetUserDTO, CreateUserDTO, UpdateUserDTO } from "@/types.ts";
+import type {
+  GetUserDTO,
+  CreateUserDTO,
+  UpdateUserDTO,
+} from "@/types/types.ts";
 import { eq } from "drizzle-orm";
 
-export async function createUser(user: CreateUserDTO): Promise<CreateUserDTO> {
+export async function createUser(
+  user: CreateUserDTO,
+): Promise<CreateUserDTO | null> {
   // create user in database
-  await db.insert(usuarios).values(user);
-  return user;
+  try {
+    await db.insert(usuarios).values(user);
+    return user;
+  } catch (err) {
+    console.error("Error creating user: ", err);
+    return null;
+  }
+}
+
+export async function getSensitiveUserData(
+  id: string,
+): Promise<CreateUserDTO | null> {
+  try {
+    const users = await db.select().from(usuarios).where(eq(usuarios.id, id));
+    return users[0] || null;
+  } catch (err) {
+    console.error("Error fetching sensitive user data: ", err);
+    return null;
+  }
 }
 
 export async function getUser(id: string): Promise<GetUserDTO | null> {
@@ -32,11 +55,11 @@ export async function updateUser(
   userId: string,
   updatedData: UpdateUserDTO,
 ): Promise<GetUserDTO | null> {
-    try {
-        await db.update(usuarios).set(updatedData).where(eq(usuarios.id, userId));
-        return getUser(userId);
-    } catch (err) {
-        console.error("Error updating user: ", err);
-        return null;
-    }
+  try {
+    await db.update(usuarios).set(updatedData).where(eq(usuarios.id, userId));
+    return getUser(userId);
+  } catch (err) {
+    console.error("Error updating user: ", err);
+    return null;
+  }
 }
