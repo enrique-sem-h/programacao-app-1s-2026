@@ -30,4 +30,7 @@ export type AuthUserDTO = {
   nome: string;
   email: string;
   senha: string;
+  cpf: string;
+  endereco: string;
+  telefone: string;
 };

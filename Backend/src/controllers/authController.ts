@@ -20,6 +20,8 @@ export async function login(req: Request, res: Response) {
     return res.status(404).json({ error: "User not found" });
   }
 
+  user.cpf = user.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "***.***.***-$4");
+
   const isPasswordValid = await bcrypt.compare(senha, user.senha);
 
   if (!isPasswordValid) {
@@ -37,6 +39,9 @@ export async function login(req: Request, res: Response) {
       id: user.id,
       nome: user.nome,
       email: user.email,
+      cpf: user.cpf,
+      endereco: user.endereco,
+      telefone: user.telefone,
     },
   });
 }

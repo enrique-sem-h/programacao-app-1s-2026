@@ -13,6 +13,9 @@ export async function getUser(
         email: usuarios.email,
         nome: usuarios.nome,
         senha: usuarios.senha,
+        cpf: usuarios.cpf,
+        endereco: usuarios.endereco,
+        telefone: usuarios.telefone,
       })
       .from(usuarios)
       .where(eq(usuarios.email, credentials.email!));

@@ -43,7 +43,6 @@ export default function Index() {
       });
 
       const data: LoginResponse = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         Alert.alert("Erro", data.error || "Falha no login");

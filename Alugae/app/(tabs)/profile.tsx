@@ -1,16 +1,31 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Text, View } from "@/components/Themed"; 
+import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/src/context/AuthContext";
 
 export default function Profile() {
+  const { user } = useAuth();
   const router = useRouter();
 
-  const ProfileButton = ({ title, icon, onPress }: { title: string; icon: any; onPress: () => void }) => (
+  const ProfileButton = ({
+    title,
+    icon,
+    onPress,
+  }: {
+    title: string;
+    icon: any;
+    onPress: () => void;
+  }) => (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <View style={styles.buttonContent}>
-        <Ionicons name={icon} size={20} color="#333" style={{ marginRight: 10 }} />
+        <Ionicons
+          name={icon}
+          size={20}
+          color="#333"
+          style={{ marginRight: 10 }}
+        />
         <Text style={styles.buttonText}>{title}</Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color="#888" />
@@ -24,18 +39,14 @@ export default function Profile() {
           <Ionicons name="person-outline" size={50} color="#ccc" />
         </View>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>Mariana</Text>
+          <Text style={styles.userName}>{user?.nome}</Text>
           <View style={styles.locationRow}>
             <Ionicons name="location-outline" size={14} color="#666" />
             <Text style={styles.locationText}>Brasilia, DF</Text>
           </View>
-          
+
           <TouchableOpacity onPress={() => router.push("/editProfile")}>
-            <Text 
-              style={styles.editLabel}
-              lightColor="#000" 
-              darkColor="#fff" 
-            >
+            <Text style={styles.editLabel} lightColor="#000" darkColor="#fff">
               Editar perfil
             </Text>
           </TouchableOpacity>
@@ -45,38 +56,38 @@ export default function Profile() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Alugaê</Text>
         <View style={styles.separator} />
-        
-        <ProfileButton 
-          title="Meus aluguéis" 
-          icon="cart-outline" 
-          onPress={() => router.push("/myRentals")} 
+
+        <ProfileButton
+          title="Meus aluguéis"
+          icon="cart-outline"
+          onPress={() => router.push("/myRentals")}
         />
-        
-        <ProfileButton 
-          title="Ajuda" 
-          icon="help-circle-outline" 
-          onPress={() => router.push("/support")} 
+
+        <ProfileButton
+          title="Ajuda"
+          icon="help-circle-outline"
+          onPress={() => router.push("/support")}
         />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Alugue seus objetos</Text>
         <View style={styles.separator} />
-        
-        <ProfileButton 
-          title="Meus anúncios" 
-          icon="megaphone-outline" 
-          onPress={() => router.push("/myAds")} 
+
+        <ProfileButton
+          title="Meus anúncios"
+          icon="megaphone-outline"
+          onPress={() => router.push("/myAds")}
         />
-        
-        <ProfileButton 
-          title="Carteira" 
-          icon="wallet-outline" 
-          onPress={() => router.push("/wallet")} 
+
+        <ProfileButton
+          title="Carteira"
+          icon="wallet-outline"
+          onPress={() => router.push("/wallet")}
         />
       </View>
 
-      <View style={{ height: 40 }} /> 
+      <View style={{ height: 40 }} />
     </ScrollView>
   );
 }
@@ -90,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 30,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   avatarPlaceholder: {
     width: 90,
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     marginLeft: 20,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   userName: {
     fontSize: 22,
@@ -114,7 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 4,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   locationText: {
     fontSize: 14,
@@ -125,11 +136,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginTop: 5,
-    textDecorationLine: 'underline'
+    textDecorationLine: "underline",
   },
   section: {
     marginBottom: 25,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   sectionTitle: {
     fontSize: 16,
@@ -145,7 +156,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#D9D9D9", 
+    backgroundColor: "#D9D9D9",
     padding: 18,
     borderRadius: 8,
     marginBottom: 12,
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
   buttonContent: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   buttonText: {
     fontSize: 16,

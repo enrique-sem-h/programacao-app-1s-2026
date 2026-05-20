@@ -11,6 +11,9 @@ type User = {
   id: string;
   nome: string;
   email: string;
+  cpf?: string;
+  endereco?: string;
+  telefone?: string;
 };
 
 type AuthContextData = {

@@ -27,7 +27,7 @@ export default function EditProfile() {
         <View style={[styles.inputWrapper, { flex: 1 }]}>
           <TextInput
             style={[styles.input, isLocked && { color: "#666" }]}
-            placeholder={user?.nome}
+            placeholder={placeholder}
             placeholderTextColor="#888"
             editable={false}
           />
@@ -57,7 +57,7 @@ export default function EditProfile() {
 
       <InputField
         label="E-mail"
-        placeholder="mariana@email.com"
+        placeholder={user?.email}
         canChange
         route="/editEmail"
       />
@@ -69,17 +69,17 @@ export default function EditProfile() {
         <Text style={styles.passwordActionText}>Alterar senha</Text>
       </TouchableOpacity>
 
-      <InputField label="Nome" placeholder="Mariana" isLocked />
-      <InputField label="CPF" placeholder="***.***.***-**" isLocked />
+      <InputField label="Nome" placeholder={user?.nome} isLocked />
+      <InputField label="CPF" placeholder={user?.cpf} isLocked />
       <InputField
         label="Endereço"
-        placeholder="AV. das Araucarias, 123"
+        placeholder={user?.endereco}
         canChange
         route="/editAddress"
       />
       <InputField
         label="Telefone"
-        placeholder="(61) 94002-8922"
+        placeholder={user?.telefone}
         canChange
         route="/editPhone"
       />
