@@ -22,9 +22,19 @@ export async function createUser(
 
 export async function getSensitiveUserData(
   id: string,
-): Promise<CreateUserDTO | null> {
+): Promise<Partial<CreateUserDTO> | null> {
   try {
-    const users = await db.select().from(usuarios).where(eq(usuarios.id, id));
+    const users = await db
+      .select({
+        id: usuarios.id,
+        nome: usuarios.nome,
+        cpf: usuarios.cpf,
+        email: usuarios.email,
+        endereco: usuarios.endereco,
+        telefone: usuarios.telefone,
+      })
+      .from(usuarios)
+      .where(eq(usuarios.id, id));
     return users[0] || null;
   } catch (err) {
     console.error("Error fetching sensitive user data: ", err);

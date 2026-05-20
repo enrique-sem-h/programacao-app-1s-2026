@@ -64,8 +64,9 @@ export async function getUser(req: Request, res: Response) {
 
   if (authUser && authUser === id) {
     const user = await userService.getSensitiveUserData(authUser);
-    
+
     if (user) {
+      user.cpf = maskCPF(user.cpf!);
       return res.status(200).json(user);
     }
 
@@ -116,4 +117,8 @@ export async function updateUser(req: Request, res: Response) {
   return res
     .status(500)
     .json({ error: "internal error, couldn't update user" });
+}
+
+function maskCPF(cpf: string): string {
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "***.***.***-$4");
 }

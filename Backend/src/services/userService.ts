@@ -17,7 +17,7 @@ export async function getUser(id: string): Promise<GetUserDTO | null> {
 
 export async function getSensitiveUserData(
   id: string,
-): Promise<CreateUserDTO | null> {
+): Promise<Partial<CreateUserDTO> | null> {
   return await userRepository.getSensitiveUserData(id);
 }
 
