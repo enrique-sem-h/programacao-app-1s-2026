@@ -1,13 +1,13 @@
 import cloudinary from "@/../infra/cloudinary/cloudinary.ts";
 import * as FotoAnuncioRepository from "@/repositories/fotoAnuncioRepository.ts";
-import type { CreateAnuncioDTO, CreateFotoAnuncioDTO } from "@/types/types.ts";
+import type { AnuncioDTO, FotoAnuncioDTO } from "@/types/types.ts";
 
 async function upload(
   idAnuncio: string,
   file: Express.Multer.File,
   ordem: number,
   principal: boolean,
-): Promise<CreateFotoAnuncioDTO | null> {
+): Promise<FotoAnuncioDTO | null> {
   const buffer = file.buffer;
 
   // upload para o Cloudinary
@@ -26,7 +26,7 @@ async function upload(
     uploadStream.end(buffer);
   });
 
-  const dto: CreateFotoAnuncioDTO = {
+  const dto: FotoAnuncioDTO = {
     anuncioId: idAnuncio,
     url: cloudinaryURL,
     ordem,

@@ -12,5 +12,21 @@ router.post(
   anuncioController.create,
 );
 router.get("/anuncios", middleware.verifyToken, anuncioController.getAnuncios);
+router.get(
+  "/anuncios/meus-anuncios",
+  middleware.verifyToken,
+  anuncioController.getUsuarioAnuncios,
+);
+router.get("/anuncios/:id", anuncioController.getAnuncioById);
+router.patch(
+  "/anuncios",
+  middleware.verifyToken,
+  anuncioController.updateAnuncio,
+);
+router.delete(
+  "/anuncios/:id",
+  middleware.verifyToken,
+  anuncioController.deleteAnuncio,
+);
 
 export default router;

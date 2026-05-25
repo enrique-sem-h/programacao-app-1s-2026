@@ -1,4 +1,4 @@
-export type CreateUserDTO = {
+export type UserDTO = {
   id?: string;
   nome: string;
   cpf: string;
@@ -8,21 +8,6 @@ export type CreateUserDTO = {
   telefone: string;
   rep?: number;
   saldo?: number;
-};
-
-export type UpdateUserDTO = {
-  email: string;
-  senha: string;
-  endereco: string;
-  telefone: string;
-};
-
-export type GetUserDTO = {
-  id: string;
-  nome: string;
-  email: string;
-  rep: number;
-  saldo: number;
 };
 
 export type AuthUserDTO = {
@@ -35,7 +20,7 @@ export type AuthUserDTO = {
   telefone: string;
 };
 
-export type CreateAnuncioDTO = {
+export type AnuncioDTO = {
   id?: string;
   titulo: string;
   descricao: string;
@@ -50,7 +35,7 @@ export type CreateAnuncioDTO = {
   usuarioId: string;
 };
 
-export type CreateFotoAnuncioDTO = {
+export type FotoAnuncioDTO = {
   anuncioId: string;
   url: string;
   ordem: number;
