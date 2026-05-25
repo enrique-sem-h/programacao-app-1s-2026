@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt-ts";
 
 export async function login(req: Request, res: Response) {
-  const { email, senha } = req.body;
+  const { email, senha } = req.body.user;
 
   if (!email || !senha) {
     return res.status(400).json({ error: "Email and password are required" });

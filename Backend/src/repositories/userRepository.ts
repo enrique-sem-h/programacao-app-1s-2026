@@ -1,15 +1,9 @@
 import { db } from "@/../infra/database/index.ts";
 import { usuarios } from "root/infra/database/schemas/usuariosSchema.ts";
-import type {
-  GetUserDTO,
-  CreateUserDTO,
-  UpdateUserDTO,
-} from "@/types/types.ts";
+import type { UserDTO } from "@/types/types.ts";
 import { eq } from "drizzle-orm";
 
-export async function createUser(
-  user: CreateUserDTO,
-): Promise<CreateUserDTO | null> {
+export async function createUser(user: UserDTO): Promise<UserDTO | null> {
   // create user in database
   try {
     await db.insert(usuarios).values(user);
@@ -22,7 +16,7 @@ export async function createUser(
 
 export async function getSensitiveUserData(
   id: string,
-): Promise<Partial<CreateUserDTO> | null> {
+): Promise<Partial<UserDTO> | null> {
   try {
     const users = await db
       .select({
@@ -42,7 +36,7 @@ export async function getSensitiveUserData(
   }
 }
 
-export async function getUser(id: string): Promise<GetUserDTO | null> {
+export async function getUser(id: string): Promise<Partial<UserDTO> | null> {
   try {
     const users = await db
       .select({
@@ -63,13 +57,26 @@ export async function getUser(id: string): Promise<GetUserDTO | null> {
 
 export async function updateUser(
   userId: string,
-  updatedData: UpdateUserDTO,
-): Promise<GetUserDTO | null> {
+  updatedData: Partial<UserDTO>,
+): Promise<Partial<UserDTO> | null> {
   try {
     await db.update(usuarios).set(updatedData).where(eq(usuarios.id, userId));
-    return getUser(userId);
+    return {
+      id: userId,
+      ...updatedData,
+    };
   } catch (err) {
     console.error("Error updating user: ", err);
+    return null;
+  }
+}
+
+export async function deleteUser(userId: string): Promise<Boolean | null> {
+  try {
+    await db.delete(usuarios).where(eq(usuarios.id, userId));
+    return true;
+  } catch (err) {
+    console.error("Error deleting user: ", err);
     return null;
   }
 }

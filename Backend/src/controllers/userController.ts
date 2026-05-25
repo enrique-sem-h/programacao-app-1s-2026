@@ -2,12 +2,12 @@ import type { NextFunction, Request, Response } from "express";
 import * as bcrypt from "bcrypt-ts";
 import uuid from "crypto";
 import * as userService from "../services/userService.ts";
-import type { CreateUserDTO, UpdateUserDTO } from "@/types/types.ts";
+import type { UserDTO } from "@/types/types.ts";
 
 export async function signup(req: Request, res: Response) {
   // if body contains user
   if (req.body.user) {
-    let user: CreateUserDTO = req.body.user;
+    let user: UserDTO = req.body.user;
 
     if (!user.nome) {
       return res.status(400).json({ error: "Bad Request: nome invalido" });
@@ -39,7 +39,7 @@ export async function signup(req: Request, res: Response) {
     // generate user id
     user.id = uuid.randomUUID();
 
-    let result = userService.createUser(user);
+    let result = await userService.createUser(user);
 
     if (!result)
       return res
@@ -84,8 +84,8 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
-  const userId = req.body.id;
-  const updatedData = {} as UpdateUserDTO;
+  const userId = req.user.id;
+  const updatedData = {} as Partial<UserDTO>;
 
   if (req.body.senha) {
     updatedData.senha = await bcrypt.hash(req.body.senha, 12);
@@ -114,6 +114,20 @@ export async function updateUser(req: Request, res: Response) {
   return res
     .status(500)
     .json({ error: "internal error, couldn't update user" });
+}
+
+export async function deleteUser(req: Request, res: Response) {
+  const userId = req.user.id;
+
+  const result = await userService.deleteUser(userId);
+
+  if (result) {
+    return res.status(200).json({ message: "User deleted successfully" });
+  }
+
+  return res
+    .status(500)
+    .json({ error: "Internal error, couldn't delete user" });
 }
 
 function maskCPF(cpf: string): string {

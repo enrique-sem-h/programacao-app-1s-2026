@@ -4,8 +4,9 @@ import * as middleware from "../../infra/jwt/middleware.ts";
 
 const router = express.Router();
 
-router.post("/signup", userController.signup);
 router.get("/user/:id", middleware.verifyToken, userController.getUser);
-router.put("/user/:id", middleware.verifyToken, userController.updateUser);
+router.post("/users", userController.signup);
+router.patch("/user/:id", middleware.verifyToken, userController.updateUser);
+router.delete("/user", middleware.verifyToken, userController.deleteUser);
 
 export default router;
