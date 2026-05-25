@@ -28,7 +28,7 @@ export const anuncios = mysqlTable("anuncios", {
   caucao: float("caucao").notNull(),
 
   usuarioId: varchar("usuario_id", { length: 36 })
-    .references(() => usuarios.id)
+    .references(() => usuarios.id, { onDelete: "cascade", onUpdate: "cascade" })
     .notNull(),
 });
 
@@ -41,6 +41,6 @@ export const fotoAnuncios = mysqlTable("foto_anuncio", {
   principal: boolean("principal").notNull().default(false),
 
   anuncioId: varchar("anuncio_id", { length: 36 })
-    .references(() => anuncios.id)
+    .references(() => anuncios.id, { onDelete: "cascade", onUpdate: "cascade" })
     .notNull(),
 });
