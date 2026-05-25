@@ -20,11 +20,12 @@ services:
       - db
     ports:
       - "3000:3000"
+      - "9229:9229"
     volumes:
       - ../../:/Backend
       - /Backend/node_modules
 
-    command: npm run dev
+    command: npm run dev:debug
 
 volumes:
   db_data:

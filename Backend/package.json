@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "tsx watch index.ts",
+    "dev:debug": "tsx watch --inspect=0.0.0.0:9229 index.ts",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
     "services:up": "docker compose -f infra/docker/compose.yaml up -d",
