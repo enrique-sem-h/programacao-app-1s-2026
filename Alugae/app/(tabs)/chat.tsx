@@ -1,42 +1,57 @@
-import React from "react";
-import { StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-const CHATS = [
-  {
-    id: "1",
-    name: "Mariana (Furadeira Bosch)",
-    lastMsg: "Olá",
-    time: "10:30",
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    id: "2",
-    name: "Enrique (Câmera Canon)",
-    lastMsg: "Obrigada!",
-    time: "Ontem",
-    image: "https://via.placeholder.com/50",
-  },
-]; // trocar dps pelos dados do banco
+import { db } from "@/firebaseConfig"; 
+
+import { collection, onSnapshot, query } from "firebase/firestore";
 
 export default function ListaChats() {
   const router = useRouter();
+  const [chats, setChats] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "chats"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const listaChats: any[] = [];
+      querySnapshot.forEach((doc) => {
+        listaChats.push({
+          id: doc.id, 
+          ...doc.data()
+        });
+      });
+      setChats(listaChats);
+      setLoading(false);
+    }, (error) => {
+      console.error("Erro ao buscar lista de chats: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const renderChat = ({ item }: any) => (
     <TouchableOpacity
       style={styles.chatItem}
-      onPress={() => router.push("/chatDetails")}
+      onPress={() =>
+        router.push({
+          pathname: "/chatDetails",
+          params: { chatId: item.id, userName: item.name },
+        })
+      }
     >
       <View style={styles.avatar} />
       <View style={styles.chatInfo}>
         <View style={styles.headerRow}>
-          <Text style={styles.userName}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.userName}>{item.name || "Conversa Sem Nome"}</Text>
+          <Text style={styles.time}>{item.time || ""}</Text>
         </View>
         <Text style={styles.lastMsg} numberOfLines={1}>
-          {item.lastMsg}
+          {item.lastMsg || "Nenhuma mensagem ainda..."}
         </Text>
       </View>
     </TouchableOpacity>
@@ -45,11 +60,20 @@ export default function ListaChats() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <FlatList
-          data={CHATS}
-          keyExtractor={(item) => item.id}
-          renderItem={renderChat}
-        />
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007AFF" />
+          </View>
+        ) : (
+          <FlatList
+            data={chats}
+            keyExtractor={(item) => item.id}
+            renderItem={renderChat}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>Nenhuma conversa iniciada ainda.</Text>
+            }
+          />
+        )}
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -62,7 +86,11 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: "white",
   },
-  pageTitle: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   chatItem: {
     flexDirection: "row",
     paddingVertical: 15,
@@ -87,4 +115,5 @@ const styles = StyleSheet.create({
   userName: { fontSize: 16, fontWeight: "600" },
   time: { fontSize: 12, color: "#888" },
   lastMsg: { fontSize: 14, color: "#666" },
+  emptyText: { textAlign: "center", marginTop: 40, color: "#888" },
 });
