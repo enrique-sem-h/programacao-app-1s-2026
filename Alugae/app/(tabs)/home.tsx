@@ -1,150 +1,200 @@
 import React from "react";
-import { StyleSheet, ScrollView, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import LogoAlugae from "@/assets/images/icon.png";
 
-import LogoAlugae from "@/assets/images/icon.png"; 
+import { useAnuncios } from "../../src/anuncios/useAnuncios";
+import { AnuncioCard, AnuncioCardSkeleton } from "@/components/AnuncioCard";
+import { CATEGORIAS } from "@/constants/constants";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
+const SKELETON_COUNT = 4;
 
 export default function Home() {
   const router = useRouter();
-  const categorias = ["Ferramentas", "Camping", "Câmeras", "Esportes"];
+  const { anuncios, loading, error, refresh } = useAnuncios();
+
+  const handleCardPress = (id: string) => {
+    router.push({ pathname: "/adDetails", params: { id } });
+  };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      
-      <View style={styles.header}>
-        <Image 
-          source={LogoAlugae} 
-          style={styles.logoImage} 
-          resizeMode="contain" 
-        />
-      </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* ── Header ─────────────────────────────────────────────────────── */}
+          <View style={styles.header}>
+            <Image
+              source={LogoAlugae}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
 
-      <View style={styles.banner}>
-        <Ionicons name="megaphone-outline" size={50} color="#666" />
-        <Text style={styles.bannerText}>Anuncie o que está parado na sua casa!</Text>
-      </View>
+          {/* ── Banner ─────────────────────────────────────────────────────── */}
+          <View style={styles.banner}>
+            <Ionicons name="megaphone-outline" size={50} color="#666" />
+            <Text style={styles.bannerText}>
+              Anuncie o que está parado na sua casa!
+            </Text>
+          </View>
 
-      <Text style={styles.sectionTitle}>Categorias</Text>
-      <FlatList
-        data={categorias}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.categoryCard}>
-            <Text style={styles.categoryText}>{item}</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item}
-        style={styles.categoriesList}
-      />
+          {/* ── Categorias ─────────────────────────────────────────────────── */}
+          <Text style={styles.sectionTitle}>Categorias</Text>
+          <FlatList
+            data={CATEGORIAS as readonly string[]}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item}
+            contentContainerStyle={styles.categoriasList}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.categoriaChip}>
+                <Text style={styles.categoriaChipText}>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
 
-      <Text style={styles.sectionTitle}>Novidades perto de você</Text>
-      <View style={styles.grid}>
-        {[1, 2, 3, 4].map((item) => (
-          <TouchableOpacity 
-            key={item} 
-            style={styles.itemCard}
-            onPress={() => router.push("/adDetails")} 
-          >
-            <View style={styles.itemImage}>
-               <Ionicons name="image-outline" size={30} color="#ccc" />
+          {/* ── Anúncios ───────────────────────────────────────────────────── */}
+          <Text style={styles.sectionTitle}>Novidades perto de você</Text>
+
+          {error ? (
+            <ErrorState message={error} onRetry={refresh} />
+          ) : (
+            <View style={styles.grid}>
+              {loading
+                ? Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                    <AnuncioCardSkeleton key={i} />
+                  ))
+                : anuncios.map((anuncio) => (
+                    <AnuncioCard
+                      key={anuncio.id}
+                      anuncio={anuncio}
+                      onPress={handleCardPress}
+                    />
+                  ))}
+
+              {!loading && anuncios.length === 0 && !error && <EmptyState />}
             </View>
-            <View style={styles.itemLine} />
-            <View style={[styles.itemLine, { width: '60%' }]} />
-            <View style={[styles.itemLine, { width: '40%', backgroundColor: '#007AFF' }]} />
-          </TouchableOpacity>
-        ))}
-      </View>
+          )}
 
-      <View style={{ height: 40 }} />
-    </ScrollView>
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
-} 
+}
+
+// ── Estados auxiliares ────────────────────────────────────────────────────────
+
+function ErrorState({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <View style={states.container}>
+      <Ionicons name="cloud-offline-outline" size={40} color="#ccc" />
+      <Text style={states.text}>{message}</Text>
+      <TouchableOpacity style={states.retryButton} onPress={onRetry}>
+        <Text style={states.retryText}>Tentar novamente</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function EmptyState() {
+  return (
+    <View style={states.container}>
+      <Ionicons name="storefront-outline" size={40} color="#ccc" />
+      <Text style={states.text}>Nenhum anúncio encontrado.</Text>
+    </View>
+  );
+}
+
+// ── Styles ────────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    paddingHorizontal: 20 
-  },
+  container: { flex: 1, paddingHorizontal: 20 },
+
   header: {
-    alignItems: 'center', 
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
     marginBottom: 30,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
-  logoImage: {
-    width: 60, 
-    height: 60,
-    marginBottom: 5,
+  logo: { width: 60, height: 60 },
+
+  banner: {
+    height: 180,
+    backgroundColor: "#eee",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
-  brandName: {
-    fontSize: 22,
+  bannerText: {
+    marginTop: 10,
+    color: "#666",
+    fontWeight: "600",
+    textAlign: "center",
+    paddingHorizontal: 20,
+  },
+
+  sectionTitle: {
+    fontSize: 18,
     fontWeight: "bold",
-    letterSpacing: 1,
+    marginBottom: 15,
+    marginTop: 10,
   },
-  banner: { 
-    height: 180, 
-    backgroundColor: "#eee", 
-    borderRadius: 12, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    marginBottom: 25, 
-    borderWidth: 1, 
-    borderColor: "#ddd" 
+
+  categoriasList: { gap: 10, marginBottom: 20 },
+  categoriaChip: {
+    backgroundColor: "#000",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
   },
-  bannerText: { 
-    marginTop: 10, 
-    color: "#666", 
-    fontWeight: "600", 
-    textAlign: "center", 
-    paddingHorizontal: 20 
+  categoriaChipText: { color: "#fff", fontWeight: "600" },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
   },
-  sectionTitle: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginBottom: 15, 
-    marginTop: 10 
+});
+
+const states = StyleSheet.create({
+  container: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 40,
+    backgroundColor: "transparent",
+    gap: 12,
   },
-  categoriesList: {
-    marginBottom: 20,
+  text: { color: "#aaa", fontSize: 14, textAlign: "center" },
+  retryButton: {
+    marginTop: 4,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: "#000",
+    borderRadius: 8,
   },
-  categoryCard: { 
-    backgroundColor: "#000", 
-    paddingHorizontal: 20, 
-    paddingVertical: 10, 
-    borderRadius: 20, 
-    marginRight: 10 
-  },
-  categoryText: { 
-    color: "#fff", 
-    fontWeight: "600" 
-  },
-  grid: { 
-    flexDirection: "row", 
-    flexWrap: "wrap", 
-    justifyContent: "space-between", 
-    backgroundColor: 'transparent' 
-  },
-  itemCard: { 
-    width: "47%", 
-    marginBottom: 20, 
-    backgroundColor: 'transparent' 
-  },
-  itemImage: { 
-    height: 120, 
-    backgroundColor: "#f0f0f0", 
-    borderRadius: 8, 
-    marginBottom: 8,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  itemLine: { 
-    height: 10, 
-    backgroundColor: "#eee", 
-    borderRadius: 5, 
-    marginBottom: 5 
-  }
+  retryText: { color: "#fff", fontWeight: "600", fontSize: 14 },
 });

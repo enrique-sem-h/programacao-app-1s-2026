@@ -1,12 +1,21 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
+import { ProfileHeader } from "@/components/ProfileHeader";
+import ProfileLoginComponent from "@/components/profileLoginComponent";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const router = useRouter();
 
   const ProfileButton = ({
@@ -32,63 +41,74 @@ export default function Profile() {
     </TouchableOpacity>
   );
 
+  function handleLogOut() {
+    Alert.alert("Log Out", "Tem certeza que deseja sair?", [
+      {
+        text: "Ok",
+        onPress: () => {
+          signOut();
+        },
+      },
+      { text: "Cancelar", style: "cancel" },
+    ]);
+  }
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.avatarPlaceholder}>
-          <Ionicons name="person-outline" size={50} color="#ccc" />
-        </View>
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{user?.nome}</Text>
-          <View style={styles.locationRow}>
-            <Ionicons name="location-outline" size={14} color="#666" />
-            <Text style={styles.locationText}>Brasilia, DF</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <View style={{ backgroundColor: "transparent" }}>
+            {user ? (
+              <ProfileHeader user={user} router={router}></ProfileHeader>
+            ) : (
+              <ProfileLoginComponent router={router}></ProfileLoginComponent>
+            )}
           </View>
 
-          <TouchableOpacity onPress={() => router.push("/editProfile")}>
-            <Text style={styles.editLabel} lightColor="#000" darkColor="#fff">
-              Editar perfil
-            </Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Alugaê</Text>
+            <View style={styles.separator} />
+
+            <ProfileButton
+              title="Meus aluguéis"
+              icon="cart-outline"
+              onPress={() => router.push("/myRentals")}
+            />
+
+            <ProfileButton
+              title="Ajuda"
+              icon="help-circle-outline"
+              onPress={() => router.push("/support")}
+            />
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Alugue seus objetos</Text>
+            <View style={styles.separator} />
+
+            <ProfileButton
+              title="Meus anúncios"
+              icon="megaphone-outline"
+              onPress={() => router.push("/myAds")}
+            />
+
+            <ProfileButton
+              title="Carteira"
+              icon="wallet-outline"
+              onPress={() => router.push("/wallet")}
+            />
+          </View>
+
+          <View style={styles.spacer} />
+        </ScrollView>
+
+        {user && (
+          <TouchableOpacity style={styles.logOutButton} onPress={handleLogOut}>
+            <Text>Log out</Text>
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Alugaê</Text>
-        <View style={styles.separator} />
-
-        <ProfileButton
-          title="Meus aluguéis"
-          icon="cart-outline"
-          onPress={() => router.push("/myRentals")}
-        />
-
-        <ProfileButton
-          title="Ajuda"
-          icon="help-circle-outline"
-          onPress={() => router.push("/support")}
-        />
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Alugue seus objetos</Text>
-        <View style={styles.separator} />
-
-        <ProfileButton
-          title="Meus anúncios"
-          icon="megaphone-outline"
-          onPress={() => router.push("/myAds")}
-        />
-
-        <ProfileButton
-          title="Carteira"
-          icon="wallet-outline"
-          onPress={() => router.push("/wallet")}
-        />
-      </View>
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
+        )}
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -96,47 +116,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 30,
-    backgroundColor: "transparent",
-  },
-  avatarPlaceholder: {
-    width: 90,
-    height: 90,
-    borderRadius: 8,
-    backgroundColor: "#f5f5f5",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  userInfo: {
-    marginLeft: 20,
-    backgroundColor: "transparent",
-  },
-  userName: {
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  locationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 4,
-    backgroundColor: "transparent",
-  },
-  locationText: {
-    fontSize: 14,
-    color: "#666",
-    marginLeft: 4,
-  },
-  editLabel: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 5,
-    textDecorationLine: "underline",
   },
   section: {
     marginBottom: 25,
@@ -170,5 +149,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#333",
+  },
+  spacer: {
+    width: "100%",
+    marginVertical: "5%",
+  },
+  logOutButton: {
+    alignItems: "center",
+    backgroundColor: "#D9D9D9",
+    padding: 18,
+    borderRadius: 8,
+    marginBottom: 12,
   },
 });

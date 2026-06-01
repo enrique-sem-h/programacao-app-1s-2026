@@ -4,17 +4,9 @@ import {
   useEffect,
   useState,
 } from "react";
+import { User } from "../@types/types";
 
 import * as SecureStore from "expo-secure-store";
-
-type User = {
-  id: string;
-  nome: string;
-  email: string;
-  cpf?: string;
-  endereco?: string;
-  telefone?: string;
-};
 
 type AuthContextData = {
   user: User | null;

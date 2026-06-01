@@ -57,8 +57,23 @@ function RootLayoutNav() {
     <AuthProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen name="index" options={{ presentation: "pageSheet" }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="login"
+            options={{
+              headerTitle: "",
+              headerBackButtonDisplayMode: "generic",
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="register"
+            options={{
+              headerTitle: "",
+              headerBackButtonDisplayMode: "generic",
+              headerShadowVisible: false,
+            }}
+          />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
       </ThemeProvider>
