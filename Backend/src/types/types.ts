@@ -8,6 +8,12 @@ export type UserDTO = {
   telefone: string;
   rep?: number;
   saldo?: number;
+  foto?: string
+};
+
+export type FotoUsuarioDTO = {
+  usuarioId: string;
+  url: string;
 };
 
 export type AuthUserDTO = {

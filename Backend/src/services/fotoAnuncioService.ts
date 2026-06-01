@@ -20,7 +20,9 @@ async function upload(
         if (error || !result) {
           reject(error);
         }
-        resolve(result!.secure_url);
+        if (result) {
+          resolve(result!.secure_url);
+        }
       },
     );
     uploadStream.end(buffer);

@@ -5,32 +5,41 @@ import * as userService from "../services/userService.ts";
 import type { UserDTO } from "@/types/types.ts";
 
 export async function signup(req: Request, res: Response) {
-  // if body contains user
-  if (req.body.user) {
-    let user: UserDTO = req.body.user;
+  const fail = (msg: string, status = 400) => {
+    res.status(status).json({ error: msg });
+  };
+
+  try {
+    const foto = req.file as Express.Multer.File;
+    if (!foto) return fail("Bad Request: Foto nao recebida");
+
+    let user: UserDTO =
+      typeof req.body.user === "string"
+        ? JSON.parse(req.body.user)
+        : req.body.user;
 
     if (!user.nome) {
-      return res.status(400).json({ error: "Bad Request: nome invalido" });
+      return fail("Bad Request: nome invalido");
     }
 
     if (!user.cpf) {
-      return res.status(400).json({ error: "Bad Request: cpf invalido" });
+      return fail("Bad Request: cpf invalido");
     }
 
     if (!user.email) {
-      return res.status(400).json({ error: "Bad Request: email invalido" });
+      return fail("Bad Request: email invalido");
     }
 
     if (!user.senha) {
-      return res.status(400).json({ error: "Bad Request: senha invalido" });
+      return fail("Bad Request: senha invalida");
     }
 
     if (!user.endereco) {
-      return res.status(400).json({ error: "Bad Request: endereco invalido" });
+      return fail("Bad Request: endereco invalido");
     }
 
     if (!user.telefone) {
-      return res.status(400).json({ error: "Bad Request: telefone invalido" });
+      return fail("Bad Request: telefone invalido");
     }
 
     // hash the password
@@ -39,7 +48,7 @@ export async function signup(req: Request, res: Response) {
     // generate user id
     user.id = uuid.randomUUID();
 
-    let result = await userService.createUser(user);
+    let result = await userService.createUser(user, foto);
 
     if (!result)
       return res
@@ -49,9 +58,8 @@ export async function signup(req: Request, res: Response) {
     return res
       .status(201)
       .json({ message: "User created with id: " + user.id });
-  } else {
-    // else return error
-    return res.status(400).json({ error: "Invalid user data" });
+  } catch (error) {
+    return fail("erro no processamento do formulario", 500);
   }
 }
 

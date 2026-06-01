@@ -44,7 +44,6 @@ export async function getUser(id: string): Promise<Partial<UserDTO> | null> {
         nome: usuarios.nome,
         email: usuarios.email,
         rep: usuarios.rep,
-        saldo: usuarios.saldo,
       })
       .from(usuarios)
       .where(eq(usuarios.id, id));
