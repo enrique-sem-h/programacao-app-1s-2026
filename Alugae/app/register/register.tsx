@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
-  StyleSheet,
   TextInput,
   ScrollView,
-  TouchableOpacity,
   Alert,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Text, View } from "@/components/Themed";
@@ -12,6 +12,7 @@ import MainButton from "@/components/MainButton";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
+import * as ImagePicker from "expo-image-picker";
 
 type RegisterResponse = {
   token?: string;
@@ -22,6 +23,7 @@ export default function Register() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [foto, setFoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -35,6 +37,25 @@ export default function Register() {
     <Text style={styles.label}>{label}</Text>
   );
 
+  async function handlePickImage() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permissão necessária", "Permita o acesso à galeria para adicionar uma foto.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setFoto(result.assets[0]);
+    }
+  }
+
   async function handleRegister() {
     try {
       if (senha !== confirmarSenha) {
@@ -44,23 +65,34 @@ export default function Register() {
 
       setLoading(true);
 
+      const formData = new FormData();
+
+      formData.append("user", JSON.stringify({
+        nome,
+        cpf,
+        email,
+        senha,
+        endereco,
+        telefone,
+      }));
+
+      if (foto) {
+        const fileName = foto.uri.split("/").pop() || "foto.jpg";
+        const fileType = foto.mimeType || "image/jpeg";
+
+        formData.append("foto", {
+          uri: foto.uri,
+          name: fileName,
+          type: fileType,
+        } as any);
+      }
+
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/signup`,
+        `${process.env.EXPO_PUBLIC_API_URL}/users`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user: {
-              nome,
-              cpf,
-              email,
-              senha,
-              endereco,
-              telefone,
-            },
-          }),
+          body: formData,
+          // sem Content-Type aqui — o fetch define automaticamente com o boundary
         },
       );
 
@@ -68,7 +100,6 @@ export default function Register() {
 
       if (!response.ok) {
         Alert.alert("Erro", data.error || "Erro ao cadastrar");
-
         return;
       }
 
@@ -76,7 +107,6 @@ export default function Register() {
       router.back();
     } catch (error) {
       console.error(error);
-
       Alert.alert("Erro", "Não foi possível conectar ao servidor");
     } finally {
       setLoading(false);
@@ -88,9 +118,21 @@ export default function Register() {
       <SafeAreaView style={styles.mainContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.avatarContainer}>
-            <View style={styles.avatarCircle}>
-              <Ionicons name="person-outline" size={40} color="#888" />
-            </View>
+            <TouchableOpacity onPress={handlePickImage}>
+              <View style={styles.avatarCircle}>
+                {foto ? (
+                  <Image
+                    source={{ uri: foto.uri }}
+                    style={{ width: "100%", height: "100%", borderRadius: 999 }}
+                  />
+                ) : (
+                  <Ionicons name="person-outline" size={40} color="#888" />
+                )}
+              </View>
+              <Text style={{ textAlign: "center", color: "#888", marginTop: 4, fontSize: 12 }}>
+                Adicionar foto
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.form}>

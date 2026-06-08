@@ -59,6 +59,7 @@ export async function signup(req: Request, res: Response) {
       .status(201)
       .json({ message: "User created with id: " + user.id });
   } catch (error) {
+    console.error("Erro detalhado:", error);
     return fail("erro no processamento do formulario", 500);
   }
 }
