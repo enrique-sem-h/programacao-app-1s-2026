@@ -19,7 +19,7 @@ router.get(
 );
 router.get("/anuncios/:id", anuncioController.getAnuncioById);
 router.patch(
-  "/anuncios",
+  "/anuncios/:id",
   middleware.verifyToken,
   anuncioController.updateAnuncio,
 );

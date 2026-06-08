@@ -97,16 +97,37 @@ export async function getAnuncioById(req: Request, res: Response) {
 }
 
 export async function updateAnuncio(req: Request, res: Response) {
-  return res.status(501).json({ error: "Not implemented" });
-  // const { id: anuncioId, ...data } = req.body.anuncio;
+  const anuncioId = req.params.id as string;
+  const userId = req.user.id;
 
-  // const anuncio = await anuncioService.updateAnuncio(anuncioId, data);
+  if (!anuncioId) {
+    return res.status(400).json({ error: "ID do anuncio invalido" });
+  }
 
-  // if (anuncio) {
-  //   return res.status(200).json({ anuncio });
-  // }
+  const anuncio = await anuncioService.getAnuncioById(anuncioId);
 
-  // return res.status(500).json({ error: "Erro ao atualizar anuncio" });
+  if (!anuncio) {
+    return res.status(404).json({ error: "Anuncio não encontrado" });
+  }
+
+  if (anuncio.usuarioId !== userId) {
+    return res.status(403).json({ error: "Usuario nao autorizado" });
+  }
+
+  const { titulo, descricao, valorDiario, caucao } = req.body;
+
+  const updated = await anuncioService.updateAnuncio(anuncioId, {
+    titulo,
+    descricao,
+    valorDiario,
+    caucao,
+  });
+
+  if (updated) {
+    return res.status(200).json({ anuncio: updated });
+  }
+
+  return res.status(500).json({ error: "Erro ao atualizar anuncio" });
 }
 
 export async function deleteAnuncio(req: Request, res: Response) {
