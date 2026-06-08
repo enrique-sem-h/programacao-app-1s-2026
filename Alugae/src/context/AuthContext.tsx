@@ -1,10 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "../@types/types";
+import { API_URL } from "@/constants/constants";
 
 import * as SecureStore from "expo-secure-store";
 
@@ -15,15 +11,12 @@ type AuthContextData = {
 
   signIn: (token: string, user: User) => Promise<void>;
   signOut: () => Promise<void>;
+  userAuthenticated: () => Promise<boolean>;
 };
 
 const AuthContext = createContext({} as AuthContextData);
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const [token, setToken] = useState<string | null>(null);
@@ -51,10 +44,7 @@ export function AuthProvider({
   async function signIn(token: string, user: User) {
     await SecureStore.setItemAsync("token", token);
 
-    await SecureStore.setItemAsync(
-      "user",
-      JSON.stringify(user)
-    );
+    await SecureStore.setItemAsync("user", JSON.stringify(user));
 
     setToken(token);
 
@@ -71,6 +61,28 @@ export function AuthProvider({
     setUser(null);
   }
 
+  async function userAuthenticated(): Promise<boolean> {
+    const storedToken = await SecureStore.getItemAsync("token");
+    const storedUser = await SecureStore.getItemAsync("user");
+
+    if (!storedToken || !storedUser) {
+      return false;
+    }
+
+    const response = await fetch(API_URL + "/verify", {
+      headers: {
+        authorization: `Bearer ${storedToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      signOut();
+      return false;
+    }
+
+    return true;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -79,6 +91,7 @@ export function AuthProvider({
         loading,
         signIn,
         signOut,
+        userAuthenticated,
       }}
     >
       {children}

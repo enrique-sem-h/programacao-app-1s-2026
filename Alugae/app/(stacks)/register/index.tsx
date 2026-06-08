@@ -40,7 +40,10 @@ export default function Register() {
   async function handlePickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permissão necessária", "Permita o acesso à galeria para adicionar uma foto.");
+      Alert.alert(
+        "Permissão necessária",
+        "Permita o acesso à galeria para adicionar uma foto.",
+      );
       return;
     }
 
@@ -67,14 +70,17 @@ export default function Register() {
 
       const formData = new FormData();
 
-      formData.append("user", JSON.stringify({
-        nome,
-        cpf,
-        email,
-        senha,
-        endereco,
-        telefone,
-      }));
+      formData.append(
+        "user",
+        JSON.stringify({
+          nome,
+          cpf,
+          email,
+          senha,
+          endereco,
+          telefone,
+        }),
+      );
 
       if (foto) {
         const fileName = foto.uri.split("/").pop() || "foto.jpg";
@@ -87,14 +93,11 @@ export default function Register() {
         } as any);
       }
 
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/users`,
-        {
-          method: "POST",
-          body: formData,
-          // sem Content-Type aqui — o fetch define automaticamente com o boundary
-        },
-      );
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/users`, {
+        method: "POST",
+        body: formData,
+        // sem Content-Type aqui — o fetch define automaticamente com o boundary
+      });
 
       const data: RegisterResponse = await response.json();
 
@@ -129,7 +132,14 @@ export default function Register() {
                   <Ionicons name="person-outline" size={40} color="#888" />
                 )}
               </View>
-              <Text style={{ textAlign: "center", color: "#888", marginTop: 4, fontSize: 12 }}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#888",
+                  marginTop: 4,
+                  fontSize: 12,
+                }}
+              >
                 Adicionar foto
               </Text>
             </TouchableOpacity>
