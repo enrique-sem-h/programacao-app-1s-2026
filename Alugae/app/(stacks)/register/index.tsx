@@ -93,7 +93,6 @@ export default function Register() {
         } as any);
       }
 
-<<<<<<< HEAD:Alugae/app/register/register.tsx
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/users`,
         {
@@ -101,13 +100,6 @@ export default function Register() {
           body: formData,
         },
       );
-=======
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/users`, {
-        method: "POST",
-        body: formData,
-        // sem Content-Type aqui — o fetch define automaticamente com o boundary
-      });
->>>>>>> e5caee949f7975b1620f60f5373b5cac84e48b17:Alugae/app/(stacks)/register/index.tsx
 
       const data: RegisterResponse = await response.json();
 
