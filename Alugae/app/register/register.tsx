@@ -92,7 +92,6 @@ export default function Register() {
         {
           method: "POST",
           body: formData,
-          // sem Content-Type aqui — o fetch define automaticamente com o boundary
         },
       );
 

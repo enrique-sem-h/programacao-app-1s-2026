@@ -24,7 +24,7 @@ export async function getFoto(usuarioId: string): Promise<string | null> {
       })
       .from(fotoUsuarios)
       .where(eq(fotoUsuarios.usuarioId, usuarioId));
-    return fotos[0].url || null;
+    return fotos[0]?.url ?? null;
   } catch (error) {
     console.error("Erro buscando foto do usuario", error);
     return null;

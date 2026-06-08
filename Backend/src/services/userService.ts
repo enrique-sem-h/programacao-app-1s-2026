@@ -43,20 +43,14 @@ export async function getSensitiveUserData(
 ): Promise<Partial<UserDTO> | null> {
   const userData = await userRepository.getSensitiveUserData(id);
 
-  const userFoto = await FotoUsuarioService.getFoto(id);
+  if (!userData) return null;
 
-  if (userData && userFoto) {
-    return {
-      ...userData,
-      foto: userFoto,
-    };
+  try {
+    const userFoto = await FotoUsuarioService.getFoto(id);
+    return { ...userData, foto: userFoto ?? undefined };
+  } catch {
+    return userData;
   }
-
-  console.error(
-    "Nao foi possivel buscar usuario ou foto no banco de dados: ",
-    error,
-  );
-  return null;
 }
 
 export async function updateUser(

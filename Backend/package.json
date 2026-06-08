@@ -17,6 +17,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "abacatepay-nodejs-sdk": "^1.6.0",
+    "axios": "^1.17.0",
     "bcrypt-ts": "^8.0.1",
     "cloudinary": "^2.10.0",
     "dotenv": "^17.4.2",

@@ -3,7 +3,7 @@ import * as routers from "./src/routers/exports.ts";
 
 const app = express();
 
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(express.json());
 
@@ -14,6 +14,7 @@ app.get("/", async (req: any, res: any) => {
 app.use("/", routers.authRouter);
 app.use("/", routers.userRouter);
 app.use("/", routers.anuncioRouter);
+app.use("/", routers.pagamentoRouter);
 
 app.listen(PORT, () => {
   console.log(`server initiated at http://localhost:${PORT}`);
