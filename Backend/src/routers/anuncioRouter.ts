@@ -11,7 +11,7 @@ router.post(
   upload.array("fotos", 7),
   anuncioController.create,
 );
-router.get("/anuncios", middleware.verifyToken, anuncioController.getAnuncios);
+router.get("/anuncios", anuncioController.getAnuncios);
 router.get(
   "/anuncios/meus-anuncios",
   middleware.verifyToken,
