@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,10 +22,17 @@ const SKELETON_COUNT = 4;
 export default function Home() {
   const router = useRouter();
   const { anuncios, loading, error, refresh } = useAnuncios();
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleCardPress = (id: string) => {
     router.push({ pathname: "/adDetails", params: { id } });
   };
+
+  function onRefresh() {
+    setRefreshing(true);
+    refresh();
+    setRefreshing(false);
+  }
 
   return (
     <SafeAreaProvider>
@@ -32,6 +40,9 @@ export default function Home() {
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {/* ── Header ─────────────────────────────────────────────────────── */}
           <View style={styles.header}>
