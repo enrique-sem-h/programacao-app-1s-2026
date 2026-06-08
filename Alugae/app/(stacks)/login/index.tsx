@@ -96,7 +96,7 @@ export default function Login() {
       />
 
       <Pressable
-        onPress={() => router.push("/register/register")}
+        onPress={() => router.push("/register")}
         style={{ marginTop: 20 }}
       >
         <Text

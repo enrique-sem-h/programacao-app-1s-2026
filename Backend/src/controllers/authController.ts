@@ -41,3 +41,11 @@ export async function login(req: Request, res: Response) {
     },
   });
 }
+
+export async function verifyToken(req: Request, res: Response) {
+  if (!req.user) {
+    return res.status(400).json({ valid: false });
+  }
+
+  return res.status(200).json({ valid: true });
+}

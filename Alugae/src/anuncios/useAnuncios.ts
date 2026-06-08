@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import type { Anuncio, AnunciosResponse } from "../@types/types";
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+import { API_URL } from "@/constants/constants";
 
 interface UseAnunciosResult {
   anuncios: Anuncio[];
@@ -19,15 +18,11 @@ export function useAnuncios(): UseAnunciosResult {
   const [error, setError] = useState<string | null>(null);
 
   const fetchAnuncios = useCallback(async () => {
-    if (!token) return;
-
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/anuncios`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(`${API_URL}/anuncios`);
 
       if (!response.ok) {
         throw new Error(
@@ -37,7 +32,7 @@ export function useAnuncios(): UseAnunciosResult {
 
       const json = await response.json();
 
-      setAnuncios(json.data ?? json.anuncios ?? json ?? []); // ← adjust once you see the shape
+      setAnuncios(json.anuncios || []);
     } catch (err: any) {
       setError(err.message ?? "Erro inesperado.");
     } finally {

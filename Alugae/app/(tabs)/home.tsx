@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -16,11 +16,13 @@ import { useAnuncios } from "../../src/anuncios/useAnuncios";
 import { AnuncioCard, AnuncioCardSkeleton } from "@/components/AnuncioCard";
 import { CATEGORIAS } from "@/constants/constants";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/src/context/AuthContext";
 
 const SKELETON_COUNT = 4;
 
 export default function Home() {
   const router = useRouter();
+  const { userAuthenticated } = useAuth();
   const { anuncios, loading, error, refresh } = useAnuncios();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -33,6 +35,14 @@ export default function Home() {
     refresh();
     setRefreshing(false);
   }
+
+  useEffect(() => {
+    userAuthenticated().then((authenticated) => {
+      if (!authenticated) {
+        router.navigate("/(modals)/loginModal");
+      }
+    });
+  }, []);
 
   return (
     <SafeAreaProvider>

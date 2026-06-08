@@ -25,7 +25,7 @@ export default function profileLoginComponent({ router }: Props) {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            router.push("/login/login");
+            router.push("/login");
           }}
         >
           <Text style={styles.buttonText}>Fazer Login</Text>
@@ -34,7 +34,7 @@ export default function profileLoginComponent({ router }: Props) {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            router.push("/register/register");
+            router.push("/register");
           }}
         >
           <Text style={styles.buttonText}>Cadastrar-se</Text>
