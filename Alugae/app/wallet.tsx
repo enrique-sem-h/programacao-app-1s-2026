@@ -101,14 +101,14 @@ export default function Wallet() {
       {/* Histórico */}
       <Text style={styles.sectionTitle}>Histórico de transações</Text>
 
-      {carteira?.historico.length === 0 ? (
+      {!carteira?.historico || carteira.historico.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="receipt-outline" size={40} color="#ccc" />
           <Text style={styles.emptyText}>Nenhuma transação ainda.</Text>
         </View>
       ) : (
-        carteira?.historico.map((item) => (
-          <View key={item.id} style={styles.transacaoCard}>
+        carteira?.historico.map((item, index) => (
+          <View key={`${item.tipo}-${item.id}-${index}`} style={styles.transacaoCard}>
             <View style={[
               styles.transacaoIcone,
               { backgroundColor: item.tipo === "ganho" ? "#E8F5E9" : "#FFEBEE" }
