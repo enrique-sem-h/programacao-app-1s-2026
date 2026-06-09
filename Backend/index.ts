@@ -3,7 +3,7 @@ import * as routers from "./src/routers/exports.ts";
 
 const app = express();
 
-const PORT = 3001;
+const PORT = 3000;
 
 app.use(express.json());
 
