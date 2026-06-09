@@ -90,6 +90,7 @@ export default function BookingSummary() {
           url: data.url,
           aluguelId: data.aluguelId,
           total: total.toFixed(2),
+          titulo,
         },
       });
     } catch (error) {

@@ -15,6 +15,7 @@ app.use("/", routers.authRouter);
 app.use("/", routers.userRouter);
 app.use("/", routers.anuncioRouter);
 app.use("/", routers.pagamentoRouter);
+app.use("/", routers.carteiraRouter);
 
 app.listen(PORT, () => {
   console.log(`server initiated at http://localhost:${PORT}`);
