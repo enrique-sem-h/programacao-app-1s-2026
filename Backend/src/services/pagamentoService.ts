@@ -10,14 +10,16 @@ export async function criarCobrancaPix(
   cpfCliente: string,
   telefoneCliente: string,
 ): Promise<{ cobrancaId: string; url: string }> {
-
-    console.log("Enviando para Abacatepay:", JSON.stringify({
-        cpf: cpfCliente,
-        telefone: telefoneCliente,
-        nome: nomeCliente,
-        email: emailCliente,
-        valor: Math.round(valor * 100),
-      }));
+  console.log(
+    "Enviando para Abacatepay:",
+    JSON.stringify({
+      cpf: cpfCliente,
+      telefone: telefoneCliente,
+      nome: nomeCliente,
+      email: emailCliente,
+      valor: Math.round(valor * 100),
+    }),
+  );
 
   const response = await axios.post(
     `${ABACATE_URL}/billing/create`,
