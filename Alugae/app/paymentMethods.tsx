@@ -11,11 +11,12 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 export default function PaymentMethods() {
   const router = useRouter();
   const { token, user } = useAuth();
-  const { url, aluguelId, total, titulo } = useLocalSearchParams<{
+  const { url, aluguelId, total, titulo, locadorId } = useLocalSearchParams<{
     url: string;
     aluguelId: string;
     total: string;
     titulo: string;
+    locadorId: string;
   }>();
 
   async function handlePix() {
@@ -37,15 +38,18 @@ export default function PaymentMethods() {
       });
 
       const chatId = `aluguel_${aluguelId}`;
+      const participantes = [user?.id, locadorId].filter(Boolean);
+
       await setDoc(doc(db, "chats", chatId), {
         aluguelId,
         locatarioId: user?.id,
         locatarioNome: user?.nome ?? "Locatário",
-        name: titulo ?? `Aluguel #${aluguelId.slice(0, 8)}`,
+        locadorId,
+        name: titulo ?? `Aluguel #${aluguelId?.slice(0, 8)}`,
         lastMsg: "Chat iniciado",
         time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
         createdAt: new Date().toISOString(),
-        participantes: [user?.id],
+        participantes,
       });
 
       router.push({

@@ -6,7 +6,6 @@ import {
   Image,
   Alert,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
@@ -33,11 +32,8 @@ export default function BookingSummary() {
   const [showPickerFim, setShowPickerFim] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const formatDate = (date: Date) =>
-    date.toLocaleDateString("pt-BR");
-
-  const formatDateISO = (date: Date) =>
-    date.toISOString().split("T")[0];
+  const formatDate = (date: Date) => date.toLocaleDateString("pt-BR");
+  const formatDateISO = (date: Date) => date.toISOString().split("T")[0];
 
   const calcularDias = () => {
     if (!dataInicio || !dataFim) return 0;
@@ -83,12 +79,13 @@ export default function BookingSummary() {
         Alert.alert("Erro", data.error ?? "Erro ao criar pagamento.");
         return;
       }
-      console.log("data da API:", JSON.stringify(data));
+
       router.push({
         pathname: "/paymentMethods",
         params: {
           url: data.url,
           aluguelId: data.aluguelId,
+          locadorId: data.locadorId,
           total: total.toFixed(2),
           titulo,
         },
@@ -119,10 +116,7 @@ export default function BookingSummary() {
       <View style={styles.row}>
         <View style={styles.dateBox}>
           <Text style={styles.label}>Data inicial</Text>
-          <TouchableOpacity
-            style={styles.dateInput}
-            onPress={() => setShowPickerInicio(true)}
-          >
+          <TouchableOpacity style={styles.dateInput} onPress={() => setShowPickerInicio(true)}>
             <Text style={{ color: dataInicio ? "#000" : "#999" }}>
               {dataInicio ? formatDate(dataInicio) : "Selecionar"}
             </Text>
@@ -130,10 +124,7 @@ export default function BookingSummary() {
         </View>
         <View style={styles.dateBox}>
           <Text style={styles.label}>Data final</Text>
-          <TouchableOpacity
-            style={styles.dateInput}
-            onPress={() => setShowPickerFim(true)}
-          >
+          <TouchableOpacity style={styles.dateInput} onPress={() => setShowPickerFim(true)}>
             <Text style={{ color: dataFim ? "#000" : "#999" }}>
               {dataFim ? formatDate(dataFim) : "Selecionar"}
             </Text>
@@ -191,11 +182,8 @@ export default function BookingSummary() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   productCard: {
-    backgroundColor: "#E5E5E5",
-    padding: 15,
-    borderRadius: 12,
-    flexDirection: "row",
-    marginBottom: 25,
+    backgroundColor: "#E5E5E5", padding: 15, borderRadius: 12,
+    flexDirection: "row", marginBottom: 25,
   },
   bigImage: { width: 80, height: 80, backgroundColor: "#D9D9D9", borderRadius: 8 },
   productDetails: { flex: 1, marginLeft: 15, backgroundColor: "transparent", justifyContent: "center" },
@@ -204,27 +192,13 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", gap: 15, backgroundColor: "transparent", marginBottom: 20 },
   dateBox: { flex: 1, backgroundColor: "transparent" },
   label: { fontWeight: "bold", marginBottom: 8, fontSize: 13 },
-  dateInput: {
-    backgroundColor: "#E5E5E5",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  priceSummary: {
-    borderTopWidth: 1,
-    borderColor: "#333",
-    paddingTop: 20,
-    backgroundColor: "transparent",
-  },
+  dateInput: { backgroundColor: "#E5E5E5", padding: 12, borderRadius: 8, alignItems: "center" },
+  priceSummary: { borderTopWidth: 1, borderColor: "#333", paddingTop: 20, backgroundColor: "transparent" },
   priceItem: { fontSize: 14, marginBottom: 5, color: "#888" },
   totalText: { fontSize: 18, fontWeight: "bold", marginTop: 10 },
   mainButton: {
-    backgroundColor: "#000",
-    padding: 18,
-    borderRadius: 12,
-    marginTop: 30,
-    alignItems: "center",
-    marginBottom: 40,
+    backgroundColor: "#000", padding: 18, borderRadius: 12,
+    marginTop: 30, alignItems: "center", marginBottom: 40,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
 });
