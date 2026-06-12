@@ -5,140 +5,108 @@ import * as userService from "../services/userService.ts";
 import type { UserDTO } from "@/types/types.ts";
 
 export async function signup(req: Request, res: Response) {
-  const fail = (msg: string, status = 400) => {
-    res.status(status).json({ error: msg });
-  };
+	try {
+		const foto = req.file as Express.Multer.File;
 
-  try {
-    const foto = req.file as Express.Multer.File;
-    if (!foto) return fail("Bad Request: Foto nao recebida");
+		let user: UserDTO = req.body.user;
 
-    let user: UserDTO =
-      typeof req.body.user === "string"
-        ? JSON.parse(req.body.user)
-        : req.body.user;
+		if (await userService.getUser({ email: user.email })) {
+			return res.status(400).json({ error: "Email already in use" });
+		}
 
-    if (!user.nome) {
-      return fail("Bad Request: nome invalido");
-    }
+		// hash the password
+		user.senha = await bcrypt.hash(user.senha, 12);
 
-    if (!user.cpf) {
-      return fail("Bad Request: cpf invalido");
-    }
+		// generate user id
+		user.id = uuid.randomUUID();
 
-    if (!user.email) {
-      return fail("Bad Request: email invalido");
-    }
+		let result = await userService.createUser(user, foto);
 
-    if (!user.senha) {
-      return fail("Bad Request: senha invalida");
-    }
+		if (!result)
+			return res
+				.status(500)
+				.json({ error: "Unable to create user in database" });
 
-    if (!user.endereco) {
-      return fail("Bad Request: endereco invalido");
-    }
-
-    if (!user.telefone) {
-      return fail("Bad Request: telefone invalido");
-    }
-
-    // hash the password
-    user.senha = await bcrypt.hash(user.senha, 12);
-
-    // generate user id
-    user.id = uuid.randomUUID();
-
-    let result = await userService.createUser(user, foto);
-
-    if (!result)
-      return res
-        .status(500)
-        .json({ error: "unable to create user in database" });
-
-    return res
-      .status(201)
-      .json({ message: "User created with id: " + user.id });
-  } catch (error) {
-    console.error("Erro detalhado:", error);
-    return fail("erro no processamento do formulario", 500);
-  }
+		return res
+			.status(201)
+			.json({ message: "User created with id: " + user.id });
+	} catch (error) {
+		console.error("Erro detalhado:", error);
+		return res.status(500).json("erro no processamento do formulario");
+	}
 }
 
 export async function getUser(req: Request, res: Response) {
-  const id = req.params.id;
-  const authUser = req.user.id;
+	const id = req.params.id;
+	const authUser = req.user.id;
 
-  if (authUser && authUser === id) {
-    const user = await userService.getSensitiveUserData(authUser);
+	if (authUser === id) {
+		const user = await userService.getSensitiveUserData(authUser);
 
-    if (user) {
-      user.cpf = maskCPF(user.cpf!);
-      return res.status(200).json(user);
-    }
+		if (user) {
+			user.cpf = maskCPF(user.cpf!);
+			return res.status(200).json(user);
+		}
 
-    return res.status(404).json({ error: "User not found" });
-  }
+		return res.status(404).json({ error: "User not found" });
+	}
 
-  if (id && typeof id === "string") {
-    const user = await userService.getUser(id);
+	if (typeof id === "string") {
+		const user = await userService.getUser({ id });
 
-    if (user) {
-      return res.status(200).json(user);
-    }
+		if (user) {
+			return res.status(200).json(user);
+		}
 
-    return res.status(404).json({ error: "User not found" });
-  }
+		return res.status(404).json({ error: "User not found" });
+	}
 
-  return res.status(400).json({ error: "ID invalido" });
+	return res.status(400).json({ error: "ID invalido" });
 }
 
 export async function updateUser(req: Request, res: Response) {
-  const userId = req.user.id;
-  const updatedData = {} as Partial<UserDTO>;
+	const userId = req.user.id;
+	const updatedData = req.body as Partial<UserDTO>;
 
-  if (req.body.senha) {
-    updatedData.senha = await bcrypt.hash(req.body.senha, 12);
-  }
+	const user = await userService.getUser({ id: userId });
 
-  if (req.body.email) {
-    updatedData.email = req.body.email;
-  }
+	if (!user) {
+		return res.status(404).json("Usuario nao encontrado");
+	}
 
-  if (req.body.endereco) {
-    updatedData.endereco = req.body.endereco;
-  }
+	if (updatedData && updatedData.senha) {
+		updatedData.senha = await bcrypt.hash(updatedData.senha, 12);
+	}
 
-  if (req.body.telefone) {
-    updatedData.telefone = req.body.telefone;
-  }
+	const foto = req.file as Express.Multer.File;
 
-  const result = await userService.updateUser(userId, updatedData);
+	const result = await userService.updateUser(userId, updatedData, foto);
 
-  if (result) {
-    return res
-      .status(200)
-      .json({ message: "User updated successfully", result });
-  }
+	if (result) {
+		return res
+			.status(200)
+			.json({ message: "User updated successfully", result });
+	}
 
-  return res
-    .status(500)
-    .json({ error: "internal error, couldn't update user" });
+	return res
+		.status(500)
+		.json({ error: "internal error, couldn't update user" });
 }
 
 export async function deleteUser(req: Request, res: Response) {
-  const userId = req.user.id;
+	const userId = req.user.id;
 
-  const result = await userService.deleteUser(userId);
+	const result = await userService.deleteUser(userId);
 
-  if (result) {
-    return res.status(200).json({ message: "User deleted successfully" });
-  }
+	if (result) {
+		return res.status(200).json({ message: "User deleted successfully" });
+	}
 
-  return res
-    .status(500)
-    .json({ error: "Internal error, couldn't delete user" });
+	return res
+		.status(500)
+		.json({ error: "Internal error, couldn't delete user" });
 }
 
 function maskCPF(cpf: string): string {
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "***.***.***-$4");
+	return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "***.***.***-$4");
 }
