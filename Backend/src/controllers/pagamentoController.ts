@@ -10,10 +10,6 @@ export async function criarPagamento(req: Request, res: Response) {
     const { anuncioId, dataInicio, dataFim, valorTotal, caucao } = req.body;
     const locatarioId = req.user.id;
 
-    if (!anuncioId || !dataInicio || !dataFim || !valorTotal) {
-      return res.status(400).json({ error: "Dados incompletos" });
-    }
-
     const usuario = await userService.getSensitiveUserData(locatarioId);
     if (!usuario) return res.status(404).json({ error: "Usuário não encontrado" });
 

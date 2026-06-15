@@ -4,7 +4,7 @@ import Joi from "joi";
 interface ValidationSchema {
 	body?: Joi.ObjectSchema;
 	file?: Joi.ObjectSchema;
-	files?: Joi.ObjectSchema;
+	files?: Joi.ArraySchema;
 }
 
 export default function validate(schema: ValidationSchema): RequestHandler {

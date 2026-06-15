@@ -81,3 +81,18 @@ export const updateUserSchema = Joi.object({
 	endereco: Joi.string().min(10),
 	telefone: Joi.string().min(8).pattern(new RegExp("^[0-9]+$")).max(11),
 });
+
+export const userLoginSchema = Joi.object({
+	email: Joi.string().email({ tlds: { allow: ["com", "net"] } }),
+	senha: Joi.string()
+		.min(8)
+		.pattern(
+			new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"),
+		)
+		.messages({
+			"string.min": "Password must be at least 8 characters long.",
+			"string.pattern.base":
+				"Password must contain at least one uppercase letter, one lowercase letter, one number, and one symbol.",
+			"any.required": "Password is required.",
+		}),
+})
