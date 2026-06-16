@@ -11,6 +11,7 @@ import { Text, View } from "@/components/Themed";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useAuth } from "@/src/context/AuthContext";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -103,7 +104,15 @@ export default function BookingSummary() {
 
       <View style={styles.productCard}>
         {fotoPrincipal ? (
-          <Image source={{ uri: fotoPrincipal }} style={styles.bigImage} />
+          <Image
+            source={{
+              uri: getOptimizedImageUrl(fotoPrincipal, {
+                width: 180,
+                height: 180,
+              })!,
+            }}
+            style={styles.bigImage}
+          />
         ) : (
           <View style={styles.bigImage} />
         )}

@@ -4,6 +4,7 @@ import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -96,7 +97,10 @@ export default function MyAds() {
           numColumns={2}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            const foto = item.fotos?.find((f) => f.principal)?.url ?? item.fotos?.[0]?.url;
+            const foto = getOptimizedImageUrl(
+              item.fotos?.find((f) => f.principal)?.url ?? item.fotos?.[0]?.url,
+              { width: 320, height: 220 },
+            );
             return (
               <View style={styles.adCard}>
                 <View style={styles.imagePlaceholder}>

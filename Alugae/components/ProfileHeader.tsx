@@ -3,6 +3,7 @@ import { Text } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import type { User } from "@/src/@types/types";
 import { Router } from "expo-router";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 interface Props {
   user: User;
@@ -10,11 +11,13 @@ interface Props {
 }
 
 export function ProfileHeader({ user, router }: Props) {
+  const foto = getOptimizedImageUrl(user.foto, { width: 180, height: 180 });
+
   return (
     <View style={styles.header}>
       <View style={styles.avatarPlaceholder}>
         <Image
-          source={{ uri: user.foto }}
+          source={{ uri: foto ?? user.foto }}
           style={{
             width: "100%",
             height: "100%",

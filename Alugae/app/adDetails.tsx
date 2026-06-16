@@ -13,6 +13,7 @@ import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
 import type { Anuncio } from "@/src/@types/types";
 import { getFotoPrincipal } from "@/src/@types/types";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 const { width } = Dimensions.get("window");
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -48,6 +49,11 @@ export default function AdDetails() {
   }, [id, token]);
 
   const isMeuAnuncio = anuncio?.usuarioId === user?.id;
+  const fotoPrincipal = getOptimizedImageUrl(getFotoPrincipal(anuncio?.fotos ?? []), {
+    width: Math.ceil(width * 2),
+    height: 600,
+    quality: 75,
+  });
 
   return (
     <View style={styles.container}>
@@ -75,9 +81,9 @@ export default function AdDetails() {
         <>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.imageContainer}>
-              {getFotoPrincipal(anuncio.fotos) ? (
+              {fotoPrincipal ? (
                 <Image
-                  source={{ uri: getFotoPrincipal(anuncio.fotos)! }}
+                  source={{ uri: fotoPrincipal }}
                   style={styles.image}
                   resizeMode="cover"
                 />
@@ -109,7 +115,12 @@ export default function AdDetails() {
                     {anuncio.fotos.map((foto) => (
                       <Image
                         key={foto.id}
-                        source={{ uri: foto.url }}
+                        source={{
+                          uri: getOptimizedImageUrl(foto.url, {
+                            width: 220,
+                            height: 220,
+                          })!,
+                        }}
                         style={styles.thumbnail}
                         resizeMode="cover"
                       />

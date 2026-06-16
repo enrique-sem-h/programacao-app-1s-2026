@@ -12,6 +12,7 @@ import { Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/src/context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 export default function EditProfile() {
   const { user, token, update } = useAuth();
@@ -124,7 +125,15 @@ export default function EditProfile() {
         <TouchableOpacity onPress={handleChangePhoto} disabled={loadingPhoto}>
           <View style={styles.avatarLarge}>
             {user?.foto ? (
-              <Image source={{ uri: user.foto }} style={styles.avatarImage} />
+              <Image
+                source={{
+                  uri: getOptimizedImageUrl(user.foto, {
+                    width: 220,
+                    height: 220,
+                  })!,
+                }}
+                style={styles.avatarImage}
+              />
             ) : (
               <Ionicons name="person-outline" size={60} color="#666" />
             )}

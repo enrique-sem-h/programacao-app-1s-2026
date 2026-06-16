@@ -4,6 +4,7 @@ import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -90,7 +91,12 @@ export default function MyRentals() {
               <View style={styles.imagePlaceholder}>
                 {item.fotoPrincipal ? (
                   <Image
-                    source={{ uri: item.fotoPrincipal }}
+                    source={{
+                      uri: getOptimizedImageUrl(item.fotoPrincipal, {
+                        width: 320,
+                        height: 200,
+                      })!,
+                    }}
                     style={{ width: "100%", height: "100%", borderRadius: 8 }}
                     resizeMode="cover"
                   />

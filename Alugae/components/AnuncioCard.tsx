@@ -4,6 +4,7 @@ import { Text } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import type { Anuncio } from "@/src/@types/types";
 import { getFotoPrincipal } from "@/src/@types/types";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 interface Props {
   anuncio: Anuncio;
@@ -11,7 +12,10 @@ interface Props {
 }
 
 export function AnuncioCard({ anuncio, onPress }: Props) {
-  const coverUrl = getFotoPrincipal(anuncio.fotos);
+  const coverUrl = getOptimizedImageUrl(getFotoPrincipal(anuncio.fotos), {
+    width: 360,
+    height: 240,
+  });
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress(anuncio.id)}>

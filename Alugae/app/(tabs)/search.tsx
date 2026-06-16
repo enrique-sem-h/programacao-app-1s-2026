@@ -17,6 +17,7 @@ import { useColorScheme } from "react-native";
 import { useAuth } from "@/src/context/AuthContext";
 import type { Anuncio } from "@/src/@types/types";
 import { getFotoPrincipal } from "@/src/@types/types";
+import { getOptimizedImageUrl } from "@/src/images/optimizedImage";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -97,7 +98,10 @@ export default function Search() {
             data={filtrados}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
-              const foto = getFotoPrincipal(item.fotos);
+              const foto = getOptimizedImageUrl(getFotoPrincipal(item.fotos), {
+                width: 220,
+                height: 220,
+              });
               return (
                 <TouchableOpacity
                   style={styles.resultItem}
