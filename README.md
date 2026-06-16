@@ -34,6 +34,7 @@ Antes de começar, certifique-se de ter instalado:
 - Docker
 - Node.js
 - npm
+- Expo Go
 
 ---
 
@@ -59,7 +60,14 @@ MYSQL_USER=
 MYSQL_PASSWORD=
 MYSQL_PORT=
 JWT_SECRET=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+ABACATE_API_KEY=
 ```
+> **Cloudinary:** crie uma conta em [cloudinary.com](https://cloudinary.com) e copie as credenciais do dashboard.
+
+> **Abacatepay:** crie uma conta em [app.abacatepay.com](https://app.abacatepay.com), vá em **Integração → API**, crie uma nova chave selecionando **API v1**.
 
 ---
 
