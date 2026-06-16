@@ -86,12 +86,7 @@ export async function updateUser(
 	if (foto) {
 		url = await FotoUsuarioService.updateFoto(usuarioId, foto);
 	}
-
-	console.log({
-		...updated,
-		...url,
-	});
-
+	
 	return {
 		...updated,
 		foto: url?.url,

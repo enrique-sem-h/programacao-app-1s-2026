@@ -23,7 +23,8 @@ export type AuthUserDTO = {
   senha: string;
   cpf: string;
   endereco: string;
-  telefone: string;
+	telefone: string;
+	foto?: string;
 };
 
 export type AnuncioDTO = {

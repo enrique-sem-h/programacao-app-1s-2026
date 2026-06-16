@@ -1,5 +1,4 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { Text } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import type { User } from "@/src/@types/types";
@@ -14,7 +13,7 @@ export function ProfileHeader({ user, router }: Props) {
   return (
     <View style={styles.header}>
       <View style={styles.avatarPlaceholder}>
-        <Ionicons name="person-outline" size={50} color="#ccc" />
+        <Image source={{ uri: user.foto }} />
       </View>
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{user?.nome}</Text>

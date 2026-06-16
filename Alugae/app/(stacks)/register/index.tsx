@@ -93,18 +93,17 @@ export default function Register() {
         } as any);
       }
 
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/users`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/users`, {
+        method: "POST",
+        body: formData,
+      });
 
       const data: RegisterResponse = await response.json();
 
       if (!response.ok) {
-        Alert.alert("Erro", data.error || "Erro ao cadastrar");
+        console.log("data", data);
+
+        Alert.alert("Erro", data.token || "Erro ao cadastrar");
         return;
       }
 
