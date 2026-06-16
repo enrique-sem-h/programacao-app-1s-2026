@@ -109,7 +109,7 @@ Atualmente existe um problema conhecido envolvendo o Drizzle ORM em ambientes Do
 
 - https://github.com/drizzle-team/drizzle-orm/issues/5622
 
-Para contornar isso, estamos usando o concurrently, mas nem sempre o container da api sobe antes do banco de dados, o que pode gerar um erro.
+Para contornar isso, estamos usando o concurrently, mas nem sempre o container da api sobe antes do banco de dados, o que pode gerar um erro. (verifique os logs do container da api!)
 
 Por conta disso, pode ser que as migrations precisem ser executadas manualmente.
 
