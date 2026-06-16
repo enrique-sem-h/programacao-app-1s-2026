@@ -9,6 +9,7 @@ type AuthContextData = {
   token: string | null;
   loading: boolean;
 
+  update: (data: Partial<User>) => void;
   signIn: (token: string, user: User) => Promise<void>;
   signOut: () => Promise<void>;
   userAuthenticated: () => Promise<boolean>;
@@ -83,12 +84,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   }
 
+  async function update(data: Partial<User>) {
+    setUser((prevUser) => {
+      if (!prevUser) return null;
+
+      const { id, cpf, nome, ...allowed } = data;
+      const cleanData = Object.fromEntries(
+        Object.entries(allowed).filter(([_, value]) => value !== undefined),
+      );
+
+      return {
+        ...prevUser,
+        ...cleanData,
+      };
+    });
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
         loading,
+        update,
         signIn,
         signOut,
         userAuthenticated,
