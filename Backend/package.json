@@ -9,6 +9,7 @@
     "dev:debug": "tsx watch --inspect=0.0.0.0:9229 index.ts",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
+    "db:seed": "tsx infra/database/seed.ts",
     "services:up": "docker compose -f infra/docker/compose.yaml up -d",
     "services:down": "docker compose -f infra/docker/compose.yaml down",
     "test": "echo \"Error: no test specified\" && exit 1"

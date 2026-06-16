@@ -50,6 +50,13 @@
       "when": 1781281021255,
       "tag": "0006_steady_stephen_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1781650502276,
+      "tag": "0007_mysterious_galactus",
+      "breakpoints": true
     }
   ]
 }

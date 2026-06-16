@@ -11,7 +11,7 @@ export async function upload(
 	const buffer = file.buffer;
 	let fileUrl = "";
 
-	if (process.env.NODE_ENV !== "production") {
+	if (process.env.NODE_ENV === "production") {
 		const dir = path.join(
 			process.cwd(),
 			"/uploads",
@@ -60,7 +60,7 @@ export async function getFoto(usuarioId: string) {
 }
 
 export async function deleteFoto(url: string): Promise<{ success: boolean }> {
-	if (process.env.NODE_ENV !== "production") {
+	if (process.env.NODE_ENV === "production") {
 		await fs.unlink(path.join(process.cwd(), url));
 		return await FotoUsuarioRepository.deleteFoto(url);
 	} else {

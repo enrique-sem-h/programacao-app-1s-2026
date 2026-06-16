@@ -13,7 +13,7 @@ async function upload(
 	const buffer = file.buffer;
 	let fileUrl = "";
 
-	if (process.env.NODE_ENV !== "production") {
+	if (process.env.NODE_ENV === "production") {
 		const dir = path.join(
 			process.cwd(),
 			"/uploads",
