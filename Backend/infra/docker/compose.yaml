@@ -25,7 +25,7 @@ services:
       - ../../:/Backend
       - /Backend/node_modules
 
-    command: npm run dev:debug
+    command: npm run start
 
 volumes:
   db_data:

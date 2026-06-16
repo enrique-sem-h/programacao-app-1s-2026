@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "tsx watch index.ts",
+    "start": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && npm run db:migrate\"",
     "dev:debug": "tsx watch --inspect=0.0.0.0:9229 index.ts",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
@@ -34,8 +35,10 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.6.0",
+    "concurrently": "^10.0.3",
     "drizzle-kit": "^0.31.10",
     "jest": "^30.4.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wait-on": "^9.0.10"
   }
 }
