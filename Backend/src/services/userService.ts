@@ -43,11 +43,8 @@ export async function getUser({
 			};
 		}
 	}
-
-	console.error(
-		"Nao foi possivel buscar usuario ou foto no banco de dados: ",
-		error,
-	);
+	
+	console.error("Nao foi possivel buscar usuario ou foto no banco de dados");
 	return null;
 }
 
@@ -86,7 +83,7 @@ export async function updateUser(
 	if (foto) {
 		url = await FotoUsuarioService.updateFoto(usuarioId, foto);
 	}
-	
+
 	return {
 		...updated,
 		foto: url?.url,
