@@ -1,6 +1,5 @@
 import type { AuthUserDTO } from "@/types/types.ts";
 import * as authRepository from "@/repositories/authRepository.ts";
-import { error } from "node:console";
 import * as FotoUsuarioService from "@/services/fotoUsuarioService.ts";
 
 export async function getUser(
@@ -21,10 +20,7 @@ export async function getUser(
 			};
 		}
 	}
-
-	console.error(
-		"Nao foi possivel buscar usuario ou foto no banco de dados: ",
-		error,
-	);
+	
+	console.error("Nao foi possivel buscar usuario ou foto no banco de dados");
 	return null;
 }

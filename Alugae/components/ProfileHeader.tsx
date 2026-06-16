@@ -13,7 +13,14 @@ export function ProfileHeader({ user, router }: Props) {
   return (
     <View style={styles.header}>
       <View style={styles.avatarPlaceholder}>
-        <Image source={{ uri: user.foto }} />
+        <Image
+          source={{ uri: user.foto }}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: 8,
+          }}
+        />
       </View>
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{user?.nome}</Text>

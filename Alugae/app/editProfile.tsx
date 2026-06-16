@@ -1,18 +1,89 @@
-import React from "react";
+import { useState } from "react";
 import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  Image,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/src/context/AuthContext";
+import * as ImagePicker from "expo-image-picker";
 
 export default function EditProfile() {
-  const { user } = useAuth();
+  const { user, token, update } = useAuth();
   const router = useRouter();
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
+
+  async function handleChangePhoto() {
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permission.granted) {
+        Alert.alert(
+          "Permissão necessária",
+          "Permita o acesso à galeria para alterar a foto.",
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (result.canceled) return;
+
+      const photo = result.assets[0];
+
+      setLoadingPhoto(true);
+
+      const formData = new FormData();
+
+      formData.append("foto", {
+        uri: photo.uri,
+        name: photo.fileName ?? "profile.jpg",
+        type: photo.mimeType ?? "image/jpeg",
+      } as any);
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/user/${user?.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          method: "PATCH",
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        const error = await response.text();
+        Alert.alert("Erro", error || "Não foi possível atualizar a foto");
+        4;
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.result?.foto) {
+        update({
+          foto: data.result.foto,
+        });
+      }
+
+      Alert.alert("Sucesso", "Foto atualizada!");
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível atualizar a foto");
+    } finally {
+      setLoadingPhoto(false);
+    }
+  }
 
   const InputField = ({
     label,
@@ -50,9 +121,25 @@ export default function EditProfile() {
       <Stack.Screen options={{ title: "Perfil" }} />
 
       <View style={styles.avatarSection}>
-        <View style={styles.avatarLarge}>
-          <Ionicons name="person-outline" size={60} color="#666" />
-        </View>
+        <TouchableOpacity onPress={handleChangePhoto} disabled={loadingPhoto}>
+          <View style={styles.avatarLarge}>
+            {user?.foto ? (
+              <Image source={{ uri: user.foto }} style={styles.avatarImage} />
+            ) : (
+              <Ionicons name="person-outline" size={60} color="#666" />
+            )}
+          </View>
+
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 8,
+              fontSize: 12,
+            }}
+          >
+            {loadingPhoto ? "Enviando..." : "Alterar foto"}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <InputField
@@ -149,4 +236,9 @@ const styles = StyleSheet.create({
     width: 140,
   },
   saveButtonText: { color: "#fff", fontWeight: "bold" },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 12,
+  },
 });
