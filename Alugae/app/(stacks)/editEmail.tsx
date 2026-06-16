@@ -26,7 +26,7 @@ export default function EditEmail() {
       Alert.alert("Sucesso", "Seu email foi atualizado com sucesso!", [
         {
           text: "Ok",
-          onPress: () => router.back,
+          onPress: () => router.back(),
         },
       ]);
       return;
