@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import * as ImagePicker from "expo-image-picker";
+import { RegisterSchema } from "@/src/validations/schemas/userSchema";
 
 type RegisterResponse = {
   token?: string;
@@ -60,6 +61,23 @@ export default function Register() {
   }
 
   async function handleRegister() {
+    const result = RegisterSchema.safeParse({
+      nome,
+      cpf,
+      email,
+      senha,
+      confirmarSenha,
+      endereco,
+      telefone,
+      foto,
+    });
+
+    if (!result.success) {
+      Alert.alert("Erro", result.error.issues[0].message);
+
+      return;
+    }
+
     try {
       if (senha !== confirmarSenha) {
         Alert.alert("Erro", "As senhas não coincidem");
