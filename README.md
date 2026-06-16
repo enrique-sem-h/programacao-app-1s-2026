@@ -32,9 +32,7 @@ Siga os passos abaixo para configurar e iniciar o projeto corretamente.
 Antes de começar, certifique-se de ter instalado:
 
 - Docker
-- Node.js
-- npm
-- Expo Go
+- Node.js/npm
 
 ---
 
@@ -127,7 +125,9 @@ Atualmente existe um problema conhecido envolvendo o Drizzle ORM em ambientes Do
 
 - https://github.com/drizzle-team/drizzle-orm/issues/5622
 
-Por conta disso, as migrations precisam ser executadas manualmente.
+Para contornar isso, estamos usando o concurrently, mas nem sempre o container da api sobe antes do banco de dados, o que pode gerar um erro.
+
+Por conta disso, pode ser que as migrations precisem ser executadas manualmente.
 
 ### Gere as migrations
 
@@ -183,6 +183,16 @@ npx expo start -c
 > **Simulador iOS (Mac):** pressione `i`
 > **Simulador Android:** pressione `a`
 > **Dispositivo físico:** escaneie o QR code com o app Expo Go
+
+---
+
+### 5. Rode o seed para popular o banco de dados (opcional)
+
+Caso deseje popular o banco de dados, execute dentro do container da api:
+```bash
+npm run db:seed
+```
+Obs: as migrations devem ter rodado e o banco de dados deve estar com todas as tabelas!
 
 ---
 
