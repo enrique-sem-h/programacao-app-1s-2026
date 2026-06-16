@@ -180,6 +180,9 @@ Execute:
 ```bash
 npx expo start -c
 ```
+> **Simulador iOS (Mac):** pressione `i`
+> **Simulador Android:** pressione `a`
+> **Dispositivo físico:** escaneie o QR code com o app Expo Go
 
 ---
 
@@ -192,3 +195,34 @@ Após finalizar os passos acima:
 - Banco de dados estará migrado corretamente
 
 O ambiente estará pronto para desenvolvimento.
+
+---
+
+## Observações importantes
+
+### Cadastro de usuários
+- O CPF deve ser válido matematicamente (o Abacatepay valida)
+- O telefone deve ter exatamente 11 dígitos (DDD + número, sem formatação)
+- A senha deve conter letras maiúsculas, minúsculas, números e símbolos (ex: `Teste@123`)
+
+### Pagamentos
+- Os pagamentos usam o Abacatepay em modo de desenvolvimento (`devMode: true`)
+- Cada desenvolvedor precisa da **própria chave** do Abacatepay
+- O CPF usado no cadastro precisa ser um CPF matematicamente válido
+
+### Firebase (Chat)
+- O chat em tempo real usa Firebase Firestore
+- As credenciais do Firebase estão em `Alugae/firebaseConfig.js`
+- O projeto Firebase é compartilhado entre os desenvolvedores
+
+---
+
+## Funcionalidades
+- [x] Cadastro e login de usuários com foto de perfil
+- [x] Criação, edição e exclusão de anúncios com fotos
+- [x] Busca e filtro de anúncios por categoria
+- [x] Pagamento via Pix integrado com Abacatepay
+- [x] Chat em tempo real entre locador e locatário (Firebase)
+- [x] Acompanhamento de status do aluguel (pendente → ativo → em uso → finalizado)
+- [x] Avaliação de aluguéis finalizados
+- [x] Carteira com histórico de ganhos e gastos
