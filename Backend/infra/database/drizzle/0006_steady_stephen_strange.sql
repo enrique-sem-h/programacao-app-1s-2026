@@ -1,1 +1,0 @@
-ALTER TABLE `foto_usuarios` ADD CONSTRAINT `foto_usuarios_url_unique` UNIQUE(`url`);
