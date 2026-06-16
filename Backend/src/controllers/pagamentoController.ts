@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import * as pagamentoService from "@/services/pagamentoService.ts";
 import * as aluguelRepository from "@/repositories/aluguelRepository.ts";
 import * as anuncioRepository from "@/repositories/anuncioRepository.ts";
+import * as avaliacaoRepository from "@/repositories/avaliacaoRepository.ts";
 import * as userService from "@/services/userService.ts";
 import { randomUUID } from "node:crypto";
 
@@ -9,6 +10,10 @@ export async function criarPagamento(req: Request, res: Response) {
   try {
     const { anuncioId, dataInicio, dataFim, valorTotal, caucao } = req.body;
     const locatarioId = req.user.id;
+
+    if (!anuncioId || !dataInicio || !dataFim || !valorTotal) {
+      return res.status(400).json({ error: "Dados incompletos" });
+    }
 
     const usuario = await userService.getSensitiveUserData(locatarioId);
     if (!usuario) return res.status(404).json({ error: "Usuário não encontrado" });
@@ -66,5 +71,52 @@ export async function getMeusAlugueis(req: Request, res: Response) {
     return res.status(200).json({ alugueis });
   } catch (error) {
     return res.status(500).json({ error: "Erro ao buscar aluguéis" });
+  }
+}
+
+export async function atualizarStatus(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const statusValidos = ["pendente", "ativo", "em_uso", "finalizado", "cancelado"];
+    if (!statusValidos.includes(status)) {
+      return res.status(400).json({ error: "Status inválido" });
+    }
+
+    await aluguelRepository.updateStatus(id, status);
+    return res.status(200).json({ message: "Status atualizado!" });
+  } catch (error) {
+    return res.status(500).json({ error: "Erro ao atualizar status" });
+  }
+}
+
+export async function avaliarAluguel(req: Request, res: Response) {
+  try {
+    const { id: aluguelId } = req.params;
+    const { estrelas, comentario } = req.body;
+    const avaliadorId = req.user.id;
+
+    const jaAvaliou = await avaliacaoRepository.getByAluguel(aluguelId);
+    if (jaAvaliou) {
+      return res.status(409).json({ error: "Você já avaliou este aluguel." });
+    }
+
+    if (!estrelas || estrelas < 1 || estrelas > 5) {
+      return res.status(400).json({ error: "Nota inválida." });
+    }
+
+    await avaliacaoRepository.create({
+      id: randomUUID(),
+      aluguelId,
+      avaliadorId,
+      estrelas,
+      comentario: comentario ?? "",
+    });
+
+    return res.status(201).json({ message: "Avaliação enviada!" });
+  } catch (error) {
+    console.error("Erro ao avaliar:", error);
+    return res.status(500).json({ error: "Erro ao salvar avaliação." });
   }
 }

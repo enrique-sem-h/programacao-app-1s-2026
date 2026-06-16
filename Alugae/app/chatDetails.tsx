@@ -4,13 +4,15 @@ import { Text, View } from "@/components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { db } from "@/firebaseConfig";
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/src/context/AuthContext";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ChatDetails() {
   const router = useRouter();
   const { chatId, userName } = useLocalSearchParams();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const meuId = user?.id ?? "anonimo";
 
@@ -19,7 +21,32 @@ export default function ChatDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!chatId) return;
+    if (!chatId || !meuId) return;
+
+    async function verificarEAtivar() {
+      try {
+        const chatRef = doc(db, "chats", chatId as string);
+        const chatSnap = await getDoc(chatRef);
+
+        if (chatSnap.exists()) {
+          const chatData = chatSnap.data();
+          if (chatData.locadorId === meuId && chatData.aluguelId) {
+            await fetch(`${API_URL}/alugueis/${chatData.aluguelId}/status`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ status: "ativo" }),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao ativar aluguel:", error);
+      }
+    }
+
+    verificarEAtivar();
 
     const q = query(
       collection(db, "chats", chatId as string, "messages"),

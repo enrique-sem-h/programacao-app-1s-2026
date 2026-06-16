@@ -20,7 +20,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 export default function AdDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   const [anuncio, setAnuncio] = useState<Anuncio | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,6 +46,8 @@ export default function AdDetails() {
 
     if (id) fetchAnuncio();
   }, [id, token]);
+
+  const isMeuAnuncio = anuncio?.usuarioId === user?.id;
 
   return (
     <View style={styles.container}>
@@ -122,32 +124,45 @@ export default function AdDetails() {
           <View style={styles.footer}>
             <View style={styles.ownerInfo}>
               <View style={styles.ownerAvatar} />
-              <Text style={styles.ownerName}>Anunciante</Text>
+              <Text style={styles.ownerName}>
+                {isMeuAnuncio ? "Meu anúncio" : "Anunciante"}
+              </Text>
             </View>
 
             <View style={styles.actionButtons}>
-              <TouchableOpacity
-                style={styles.chatButton}
-                onPress={() => router.push("/chat")}
-              >
-                <Text style={styles.buttonText}>Chat</Text>
-              </TouchableOpacity>
+              {!isMeuAnuncio && (
+                <TouchableOpacity
+                  style={styles.chatButton}
+                  onPress={() => router.push("/chat")}
+                >
+                  <Text style={styles.buttonText}>Chat</Text>
+                </TouchableOpacity>
+              )}
 
-              <TouchableOpacity
-                style={styles.rentButton}
-                onPress={() => router.push({
-                  pathname: "/bookingSummary",
-                  params: {
-                    anuncioId: anuncio.id,
-                    titulo: anuncio.titulo,
-                    valorDiario: anuncio.valorDiario,
-                    caucao: anuncio.caucao,
-                    fotoPrincipal: getFotoPrincipal(anuncio.fotos) ?? "",
-                  }
-                })}
-              >
-                <Text style={styles.buttonText}>Alugar</Text>
-              </TouchableOpacity>
+              {isMeuAnuncio ? (
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => router.push({ pathname: "/editAd", params: { id: anuncio.id } })}
+                >
+                  <Text style={styles.buttonText}>Editar</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.rentButton}
+                  onPress={() => router.push({
+                    pathname: "/bookingSummary",
+                    params: {
+                      anuncioId: anuncio.id,
+                      titulo: anuncio.titulo,
+                      valorDiario: anuncio.valorDiario,
+                      caucao: anuncio.caucao,
+                      fotoPrincipal: getFotoPrincipal(anuncio.fotos) ?? "",
+                    }
+                  })}
+                >
+                  <Text style={styles.buttonText}>Alugar</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </>
@@ -160,11 +175,8 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
   imageContainer: {
-    width: width,
-    height: 300,
-    backgroundColor: "#eee",
-    justifyContent: "center",
-    alignItems: "center",
+    width: width, height: 300,
+    backgroundColor: "#eee", justifyContent: "center", alignItems: "center",
   },
   image: { width: width, height: 300 },
   thumbnail: { width: 100, height: 100, borderRadius: 8, marginRight: 10 },
@@ -176,33 +188,26 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: "bold", marginBottom: 10 },
   description: { fontSize: 14, color: "#666", lineHeight: 20 },
   footer: {
-    position: "absolute",
-    bottom: 0,
-    width: width,
-    padding: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
-    backgroundColor: "#fff",
+    position: "absolute", bottom: 0, width: width,
+    padding: 20, flexDirection: "row", alignItems: "center",
+    justifyContent: "space-between", borderTopWidth: 1,
+    borderTopColor: "#eee", backgroundColor: "#fff",
   },
   ownerInfo: { flexDirection: "row", alignItems: "center", backgroundColor: "transparent" },
   ownerAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#ddd", marginRight: 10 },
   ownerName: { fontWeight: "bold" },
   actionButtons: { flexDirection: "row", backgroundColor: "transparent" },
   chatButton: {
-    backgroundColor: "#333",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginRight: 10,
+    backgroundColor: "#333", paddingVertical: 12,
+    paddingHorizontal: 20, borderRadius: 8, marginRight: 10,
   },
   rentButton: {
-    backgroundColor: "#000",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    backgroundColor: "#000", paddingVertical: 12,
+    paddingHorizontal: 20, borderRadius: 8,
+  },
+  editButton: {
+    backgroundColor: "#007AFF", paddingVertical: 12,
+    paddingHorizontal: 20, borderRadius: 8,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
 });

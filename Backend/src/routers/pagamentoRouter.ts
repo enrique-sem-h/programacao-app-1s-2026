@@ -6,6 +6,10 @@ import { pagamentoSchema } from "root/infra/validations/schemas/pagamentoSchema.
 
 const router = express.Router();
 
+router.patch("/alugueis/:id/status", middleware.verifyToken, pagamentoController.atualizarStatus);
+
+router.post("/alugueis/:id/avaliar", middleware.verifyToken, pagamentoController.avaliarAluguel);
+
 router.post(
 	"/pagamento/criar",
 	validate({ body: pagamentoSchema }),
