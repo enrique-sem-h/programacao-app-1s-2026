@@ -1,11 +1,11 @@
 ## Integrantes
 
-| Nome | Atribuições |
-|------|-------------|
-| **Mariana Terol** | Desenvolvimento do frontend (telas, navegação e integração com a API), implementação do sistema de pagamento via Pix (Abacatepay), implementação do chat em tempo real (Firebase) |
-| **Enrique Carvalho** | Estruturação inicial do backend (autenticação, login e registro), CRUD de anúncios e fotos, configuração do banco de dados e migrations |
+| Nome | Matrícula | Atribuições |
+|------|-----------|-------------|
+| **Mariana Terol** | UC22200554 | Desenvolvimento do frontend (telas, navegação e integração com a API); implementação do sistema de pagamento via Pix (Abacatepay); implementação do chat em tempo real (Firebase) |
+| **Enrique Carvalho** | UC22103250 | Estruturação inicial do backend (autenticação, login e registro); CRUD de anúncios e fotos; configuração do banco de dados e migrations |
 
-> O desenvolvimento foi colaborativo, com ambos os integrantes contribuindo em diferentes partes do projeto conforme a necessidade (76 commits no total).
+> O desenvolvimento foi colaborativo, com ambos os integrantes contribuindo em diferentes partes do projeto conforme a necessidade.
 
 # Estrutura
 
