@@ -2,8 +2,8 @@
 
 | Nome | Matrícula | Atribuições |
 |------|-----------|-------------|
-| **Mariana Terol** | UC22200554 | Desenvolvimento do frontend (telas, navegação e integração com a API); implementação do sistema de pagamento via Pix (Abacatepay); implementação do chat em tempo real (Firebase) |
-| **Enrique Carvalho** | UC22103250 | Estruturação do backend (autenticação, login e registro); CRUD de anúncios e fotos; configuração do banco de dados e migrations |
+| **Mariana Terol** | UC22200554 | Desenvolvimento do frontend (telas, navegação e integração), implementação do sistema de pagamento via Pix (Abacatepay), implementação do chat em tempo real (Firebase) |
+| **Enrique Carvalho** | UC22103250 | Estruturação do backend (autenticação, login e registro), CRUD de anúncios e fotos, configuração do banco de dados e migrations |
 
 > O desenvolvimento foi colaborativo, com ambos os integrantes contribuindo em diferentes partes do projeto conforme a necessidade.
 
